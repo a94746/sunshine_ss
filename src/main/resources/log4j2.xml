@@ -1,0 +1,16 @@
+<Configuration>
+    <Properties>
+        <Property name="basePath">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.}} | [%t] | %-5level | %-40.40logger{39} | %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO" additivity="true">
+            <AppenderRef ref="stdout"/>
+        </Root>
+    </Loggers>
+</Configuration>
