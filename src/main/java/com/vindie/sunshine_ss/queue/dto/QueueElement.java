@@ -1,5 +1,6 @@
-package com.vindie.sunshine_ss.account.dto;
+package com.vindie.sunshine_ss.queue.dto;
 
+import com.vindie.sunshine_ss.account.dto.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,14 +10,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "devices")
+@Table(name = "queue")
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Device {
+public class QueueElement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "event_line_id", nullable = false)
+    private EventLine eventLine;
 
     @EqualsAndHashCode.Exclude
     @ManyToOne
@@ -24,21 +29,7 @@ public class Device {
     private Account owner;
 
     @CreatedDate
-    @Column(name = "first_entry", nullable = false)
-    private LocalDate firstEntry;
+    @Column(name = "created", nullable = false)
+    private LocalDate created;
 
-    @Column(name = "android_id")
-    private String androidId;
-
-    @Column(name = "imei")
-    private String imei;
-
-    @Column(name = "wifi_mac")
-    private String wifiMac;
-
-    @Column(name = "phone_num")
-    private String phoneNum;
-
-    @Column(name = "app_version", nullable = false)
-    private String appVersion;
 }

@@ -3,6 +3,7 @@ package com.vindie.sunshine_ss.pic;
 import com.vindie.sunshine_ss.account.dto.Account;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "pics")
@@ -13,14 +14,17 @@ public class Pic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private Account owner;
 
     @Lob
-    @Column(name = "file", nullable = false)
+    @Column(name = "file")
     private byte[] file;
 
     @Column(name = "num", nullable = false)
     private Byte num;
+
+
 }

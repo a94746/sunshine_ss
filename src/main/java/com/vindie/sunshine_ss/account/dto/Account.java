@@ -2,19 +2,25 @@ package com.vindie.sunshine_ss.account.dto;
 
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Language;
+import com.vindie.sunshine_ss.filter.dto.Filter;
 import com.vindie.sunshine_ss.location.Location;
+import com.vindie.sunshine_ss.match.Match;
+import com.vindie.sunshine_ss.pic.Pic;
+import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.SQLDelete;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 @Table(name = "accounts")
-@SQLDelete(sql = "UPDATE accounts SET deleted = true WHERE id=?")
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Account {
 
     @Id
@@ -50,12 +56,12 @@ public class Account {
     private Location location;
 
     @Column(name = "deleted", nullable = false)
-    private Boolean deleted = false;
+    private Boolean deleted;
 
     /**
      * at the last scheduling, he participated in it, but nothing was found according to his filters
      */
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "without_actual_matches", nullable = false)
     private Boolean withoutActualMatches;
 
 
@@ -71,12 +77,48 @@ public class Account {
 
 
 
-    @Column(name = "permanent_matches_num", nullable = false)
-    private Byte permanentMatchesNum;
+    @Column(name = "matches_num", nullable = false)
+    private Byte matchesNum;
 
-    @Column(name = "temporary_matches_num")
-    private Byte temporaryMatchesNum;
+    @Column(name = "prem_matches_num")
+    private Byte premMatchesNum;
 
-    @Column(name = "temporary_matches_till")
-    private LocalDateTime temporaryMatchesTill;
+    @Column(name = "prem_matches_till")
+    private LocalDateTime premMatchesTill;
+
+
+
+    @EqualsAndHashCode.Exclude
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "filter_id", nullable = false, unique = true)
+    private Filter filter;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    private Collection<Contact> contacts;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    private Collection<Device> devices;
+
+    @EqualsAndHashCode.Exclude
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "cread_id", nullable = false, unique = true)
+    private Cread cread;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private Collection<Pic> pics;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private Collection<Match> matchesOwner;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "partner", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private Collection<Match> matchesPartner;
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private Collection<QueueElement> queueElements;
 }

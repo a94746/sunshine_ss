@@ -4,12 +4,14 @@ import com.vindie.sunshine_ss.account.dto.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "matches")
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Match {
 
     @Id
@@ -33,9 +35,6 @@ public class Match {
 
     @Column(name = "liked", nullable = false)
     private Boolean liked;
-
-    @Column(name = "actual", nullable = false)
-    private Boolean actual;
 
     @Column(name = "message")
     private String message;

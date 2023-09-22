@@ -14,8 +14,11 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "key", nullable = false, unique = true)
-    private String key;
+    @Column(name = "name_en", nullable = false, unique = true)
+    private String nameEn;
+
+    @Column(name = "name_ru", nullable = false, unique = true)
+    private String nameRu;
 
     @Column(name = "time_shift", nullable = false)
     private Byte timeShift;

@@ -2,6 +2,7 @@ package com.vindie.sunshine_ss.account.dto;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "contacts")
@@ -12,13 +13,14 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Account owner;
 
-    @Column(name = "key", nullable = false)
+    @Column(name = "k", nullable = false)
     private String key;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "v", nullable = false)
     private String value;
 }
