@@ -83,8 +83,8 @@ public class Account {
     @Column(name = "prem_matches_num")
     private Byte premMatchesNum;
 
-    @Column(name = "prem_matches_till")
-    private LocalDateTime premMatchesTill;
+    @Column(name = "prem_till")
+    private LocalDateTime premTill;
 
 
 

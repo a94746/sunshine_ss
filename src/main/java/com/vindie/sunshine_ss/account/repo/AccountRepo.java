@@ -24,12 +24,22 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     @Modifying
     @Query("UPDATE Account a " +
             "SET a.premMatchesNum = NULL, " +
-            "a.premMatchesTill = NULL " +
-            "WHERE a.premMatchesTill < :now")
+            "a.premTill = NULL " +
+            "WHERE a.premTill < :now")
     void deleteOverduePrem(LocalDateTime now);
 
     @Query("UPDATE Account a " +
             "SET a.deleted = true " +
             "WHERE a.id = :id")
     void fakeDelete(Long id);
+
+    @Query("SELECT a FROM Account a " +
+            "LEFT JOIN FETCH a.matchesOwner " +
+            "LEFT JOIN FETCH a.matchesOwner.partner " +
+            "LEFT JOIN FETCH a.filter " +
+            "LEFT JOIN FETCH a.filter.relationsWithGenders " +
+            "LEFT JOIN FETCH a.filter.chatPrefs " +
+            "LEFT JOIN FETCH a.filter.relationsWithGenders.genders " +
+            "WHERE a.location.id = :locationId")
+    List<Account> findForScheduling(Long locationId);
 }

@@ -1,6 +1,8 @@
 package com.vindie.sunshine_ss.timer;
 
 import com.vindie.sunshine_ss.account.dto.Account;
+import com.vindie.sunshine_ss.common.ss_event.QueueElementsUpdateSsEvent;
+import com.vindie.sunshine_ss.common.ss_event.SsEvent;
 import com.vindie.sunshine_ss.common.timers.QueueParserTimer;
 import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
@@ -32,6 +34,8 @@ class QueueParserTimerTest extends WithDbData {
         assertEquals(1, queueElements.size());
         assertEquals(eventLines.get(0).getId(), queueElements.get(0).getEventLine().getId());
         assertEquals(account.getId(), queueElements.get(0).getOwner().getId());
+
+        checkEvent(List.of(account.getId()));
     }
 
     @Test
@@ -59,6 +63,8 @@ class QueueParserTimerTest extends WithDbData {
                         throw new RuntimeException();
                     }
                 });
+
+        checkEvent(peopleOnLocation);
     }
 
     @Test
@@ -92,4 +98,9 @@ class QueueParserTimerTest extends WithDbData {
         assertEquals(0, queueElementRepo.findAll().size());
     }
 
+    private void checkEvent(List<Long> ids) {
+        checkEverySec().until(() -> eventEquals(SsEvent.Type.QUEUE_ELEMENTS_UPDATE));
+        QueueElementsUpdateSsEvent event = (QueueElementsUpdateSsEvent) getEventAndClean();
+        assertEquals(ids, event.getIds());
+    }
 }

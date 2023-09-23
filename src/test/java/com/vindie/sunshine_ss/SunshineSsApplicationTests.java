@@ -1,41 +1,54 @@
 package com.vindie.sunshine_ss;
 
 import com.github.javafaker.Faker;
+import com.vindie.sunshine_ss.common.ss_event.SsEvent;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;
+import com.vindie.sunshine_ss.utils.EventUtils;
+import org.awaitility.core.ConditionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.MySQLContainer;
 
-import java.time.ZoneOffset;
-import java.util.TimeZone;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
 
 @ActiveProfiles("unit-test")
 @SpringBootTest(classes = SunshineSsApplication.class)
 @TestPropertySource(locations = "classpath:test.properties")
 public abstract class SunshineSsApplicationTests {
     protected static final Faker FAKER = Faker.instance();
-    private static final int MYSQL_PORT = 3306;
-
     @Autowired
     private DatabaseCleaner databaseCleaner;
-    public static final MySQLContainer<?> MY_SQL = new MySQLContainer<>("mysql:8.0.28")
-            .withExposedPorts(MYSQL_PORT)
-            .withDatabaseName("sunshine")
-            .withUsername("root")
-            .withPassword("root");
+    @Autowired
+    private EventUtils eventUtils;
 
-    static {
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.UTC));
-        MY_SQL.start();
-        System.setProperty("MYSQL_HOST", MY_SQL.getContainerIpAddress());
-        System.setProperty("MYSQL_PORT", MY_SQL.getMappedPort(MYSQL_PORT).toString());
+    protected ConditionFactory checkEverySec() {
+        return checkEverySec(10);
+    }
+
+    protected ConditionFactory checkEverySec(int timeoutInSec) {
+        return await().pollInterval(1, TimeUnit.SECONDS)
+                .timeout(Duration.of(timeoutInSec, ChronoUnit.SECONDS));
+    }
+
+    protected boolean eventEquals(SsEvent.Type type) {
+        return eventUtils.event != null && eventUtils.event.getType() == type;
+    }
+
+    protected SsEvent getEventAndClean() {
+        SsEvent result = eventUtils.event;
+        eventUtils.event = null;
+        return result;
     }
 
     @BeforeEach
     public void prepareData() {
+        eventUtils.event = null;
         databaseCleaner.clearTables();
     }
 

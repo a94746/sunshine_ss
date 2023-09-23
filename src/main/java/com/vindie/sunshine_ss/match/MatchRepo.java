@@ -17,4 +17,10 @@ public interface MatchRepo extends JpaRepository<Match, Long> {
     void deleteOlder(LocalDateTime older);
 
     List<Match> findAllByOwnerId(Long ownerId);
+
+    @Query("SELECT m FROM Match m " +
+            "LEFT JOIN FETCH m.owner " +
+            "LEFT JOIN FETCH m.partner " +
+            "WHERE m.ownerId IN (:ownerIds)")
+    List<Match> findAllByOwnerIds(List<Long> ownerIds);
 }

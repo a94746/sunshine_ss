@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "filters")
@@ -35,5 +36,5 @@ public class Filter {
     @JoinTable(name = "filters_to_chat_prefs", joinColumns = @JoinColumn(name = "filter_id"))
     @Column(name = "chat_prefs", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    private Collection<ChatPref> chatPrefs;
+    private Set<ChatPref> chatPrefs;
 }

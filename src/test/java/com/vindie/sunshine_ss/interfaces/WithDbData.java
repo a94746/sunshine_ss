@@ -1,6 +1,5 @@
 package com.vindie.sunshine_ss.interfaces;
 
-import com.vindie.sunshine_ss.SunshineSsApplicationTests;
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.repo.ContactRepo;
@@ -28,7 +27,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class WithDbData extends SunshineSsApplicationTests {
+public abstract class WithDbData extends WithSqlContener {
     protected static final Random RANDOM = new Random();
 
     @Autowired
@@ -59,8 +58,8 @@ public abstract class WithDbData extends SunshineSsApplicationTests {
     @BeforeEach
     public void createData() {
         final int locationsNum = 2;
-        final int accountsNum = 13;
-        final int matchPairsNum = 5;
+        final int accountsNum = 33;
+        final int matchPairsNum = 6;
 
         List<Location> locations = new ArrayList<>();
         for (int i = 0; i < locationsNum; i++) {
@@ -71,7 +70,7 @@ public abstract class WithDbData extends SunshineSsApplicationTests {
 
         List<Account> accounts = new ArrayList<>();
         for (int i = 0; i < accountsNum; i++) {
-            Location location = locations.get(RANDOM.nextInt(locations.size()));
+            Location location = DataUtils.getRandomElement(locations);
             accounts.add(DataUtils.newTypicalAccount(location));
         }
         accountRepo.saveAll(accounts);

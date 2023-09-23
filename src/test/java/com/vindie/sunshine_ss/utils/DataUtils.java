@@ -21,30 +21,36 @@ import com.vindie.sunshine_ss.queue.dto.EventLine;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class DataUtils {
-    public static final LocalDate YO_20 = LocalDate.now().minusYears(20);
     public static final Faker FAKER = Faker.instance();
+    public static final Random RANDOM = new Random();
 
     public static Account newTypicalAccount(Location location) {
-        return newTypicalAccount(5, 7, 2, location);
+        return newTypicalAccount(RANDOM.nextInt(5), RANDOM.nextInt(7), RANDOM.nextInt(1) + 1, location);
     }
     public static Account newTypicalAccount(int picsNum, int contactsNum, int devicesNum, Location location) {
         Account acc = AccountService.createCorrect();
         acc.setName(FAKER.name().firstName());
-        acc.setBday(YO_20);
+        acc.setBday(LocalDate.now()
+                .minusYears(18)
+                .minusYears(RANDOM.nextInt(60))
+                .minusDays(RANDOM.nextInt(365)));
         acc.setDescription(FAKER.company().catchPhrase());
         acc.setLang(Language.EN);
-        acc.setGender(Gender.MALE);
-        acc.setMatchesNum(Gender.MALE.getMatchesNum());
-        acc.setViews(FAKER.number().randomDigit());
-        acc.setLikes(FAKER.number().randomDigit());
+        acc.setRating((byte) (1 + RANDOM.nextInt(99)));
+
+        boolean prem = RANDOM.nextInt(10) < 3;
+        Gender gender = getRandomElement(Gender.values());
+        acc.setGender(gender);
+        acc.setMatchesNum(prem
+                ? gender.getPremMatchesNum()
+                : gender.getMatchesNum());
+        acc.setViews(RANDOM.nextInt(100) );
+        acc.setLikes(acc.getViews() == 0 ? 0 : acc.getViews() - RANDOM.nextInt(acc.getViews()));
         acc.setLastPresence(LocalDateTime.now());
         acc.setLocation(location);
 
@@ -79,24 +85,23 @@ public class DataUtils {
         location.setLastScheduling(LocalDateTime.now());
         location.setScheduledNow(false);
         location.setTimeShift((byte) FAKER.number().randomDigit());
-        location.setNameRu(FAKER.address().cityName() + index++);
-        location.setNameEn(FAKER.address().cityName() + index++);
+        location.setName(FAKER.address().cityName() + index++);
         return location;
     }
 
     private static Filter newTypicalFilter(Account acc) {
         Filter filter = new Filter();
-        filter.setAgeFrom((byte) (50 + FAKER.number().randomDigit()));
-        filter.setAgeTo((byte) (50 - FAKER.number().randomDigit()));
+        filter.setAgeFrom((byte) (35 - RANDOM.nextInt(17)));
+        filter.setAgeTo((byte) (35 + RANDOM.nextInt(30)));
         filter.setOwner(acc);
-        filter.setChatPrefs(Set.of(ChatPref.ONLINE, ChatPref.LIFE));
-        Set<RelationWithGenders> relationsWithGenders = Arrays.stream(Relation.values())
-                .limit(3)
+        filter.setChatPrefs(new HashSet<>(getRandomPart(ChatPref.values())));
+        Set<RelationWithGenders> relationsWithGenders = getRandomPart(Relation.values())
+                .stream()
                 .map(r -> {
                     RelationWithGenders relationWithGenders = new RelationWithGenders();
                     relationWithGenders.setFilter(filter);
                     relationWithGenders.setRelation(r);
-                    relationWithGenders.setGenders(Set.of(Gender.MALE, Gender.NON_BINARY));
+                    relationWithGenders.setGenders(new HashSet<>(getRandomPart(Gender.values())));
                     return relationWithGenders;
                 })
                 .collect(Collectors.toSet());
@@ -158,5 +163,27 @@ public class DataUtils {
         ev.setOwnerId(ownerId);
         ev.setLocationId(locationId);
         return ev;
+    }
+
+    public static <T> T getRandomElement(List<T> input) {
+        return input.get(RANDOM.nextInt(input.size()));
+    }
+
+    public static <T> T getRandomElement(T[] input) {
+        return getRandomElement(Arrays.asList(input));
+    }
+
+    public static <T> List<T> getRandomPart(List<T> input) {
+        final int resultSize = RANDOM.nextInt(input.size());
+        Set<Integer> ids = new HashSet<>();
+        while (ids.size() < resultSize) {
+            ids.add(RANDOM.nextInt(input.size()));
+        }
+        return ids.stream()
+                .map(input::get)
+                .toList();
+    }
+    public static <T> List<T> getRandomPart(T[] input) {
+        return getRandomPart(Arrays.asList(input));
     }
 }

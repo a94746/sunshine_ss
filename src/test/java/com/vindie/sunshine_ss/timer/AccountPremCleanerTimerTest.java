@@ -20,7 +20,7 @@ class AccountPremCleanerTimerTest extends WithDbData {
         final byte premMatchesNum = 10;
         Account acc2 = DataUtils.newTypicalAccount(account.getLocation());
         acc2.setPremMatchesNum(premMatchesNum);
-        acc2.setPremMatchesTill(LocalDateTime.now().minusHours(1));
+        acc2.setPremTill(LocalDateTime.now().minusHours(1));
         accountRepo.save(acc2);
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
         assertEquals(premMatchesNum, accountRepo.findById(acc2.getId()).get().getPremMatchesNum());
@@ -28,7 +28,7 @@ class AccountPremCleanerTimerTest extends WithDbData {
         accountPremCleanerTimer.timer();
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
         assertNull(accountRepo.findById(acc2.getId()).get().getPremMatchesNum());
-        assertNull(accountRepo.findById(acc2.getId()).get().getPremMatchesTill());
+        assertNull(accountRepo.findById(acc2.getId()).get().getPremTill());
         assertEquals(accountRepo.findById(acc2.getId()).get().getGender().getMatchesNum(),
                 accountRepo.findById(acc2.getId()).get().getMatchesNum());
     }

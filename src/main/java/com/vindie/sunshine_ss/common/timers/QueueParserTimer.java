@@ -2,6 +2,7 @@ package com.vindie.sunshine_ss.common.timers;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
+import com.vindie.sunshine_ss.common.ss_event.QueueElementsUpdateSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
@@ -10,6 +11,7 @@ import com.vindie.sunshine_ss.queue.repo.EventLineRepo;
 import com.vindie.sunshine_ss.queue.repo.QueueElementRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,13 +31,13 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @AllArgsConstructor
 @Slf4j
 public class QueueParserTimer {
-
     public static final int INTERVAL_MIN = 10;
 
     private EventLineRepo eventLineRepo;
     private AccountRepo accountRepo;
     private LocationRepo locationRepo;
     private QueueElementRepo queueElementRepo;
+    private ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Scheduled(fixedRate = INTERVAL_MIN, timeUnit = TimeUnit.MINUTES)
@@ -80,6 +82,9 @@ public class QueueParserTimer {
     }
 
     private void save(EventLine eventLine, List<Account> accs) {
+        List<Long> accIds = accs.stream()
+                .map(Account::getId)
+                .toList();
         List<QueueElement> queueElements = accs.stream()
                 .map(acc -> {
                     QueueElement qe = new QueueElement();
@@ -90,6 +95,7 @@ public class QueueParserTimer {
                 .toList();
         queueElementRepo.saveAll(queueElements);
 
+        QueueElementsUpdateSsEvent event = new QueueElementsUpdateSsEvent(accIds);
+        eventPublisher.publishEvent(event);
     }
-
 }
