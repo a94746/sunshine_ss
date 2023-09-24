@@ -1,4 +1,4 @@
-package com.vindie.sunshine_ss.common.timers;
+package com.vindie.sunshine_ss.common.timers.match;
 
 import com.vindie.sunshine_ss.match.MatchRepo;
 import lombok.AllArgsConstructor;

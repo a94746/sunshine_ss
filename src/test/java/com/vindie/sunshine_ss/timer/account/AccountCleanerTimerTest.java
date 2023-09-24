@@ -1,8 +1,8 @@
-package com.vindie.sunshine_ss.timer;
+package com.vindie.sunshine_ss.timer.account;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.common.timers.AccountCleanerTimer;
-import com.vindie.sunshine_ss.common.timers.QueueParserTimer;
+import com.vindie.sunshine_ss.common.timers.account.AccountCleanerTimer;
+import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.utils.DataUtils;

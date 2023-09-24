@@ -1,4 +1,4 @@
-package com.vindie.sunshine_ss.common.ss_event;
+package com.vindie.sunshine_ss.common.event.ss;
 
 import lombok.Getter;
 

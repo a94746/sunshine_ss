@@ -20,9 +20,6 @@ public class Location {
     @Column(name = "time_shift", nullable = false)
     private Byte timeShift;
 
-    @Column(name = "scheduled_now", nullable = false)
-    private Boolean scheduledNow;
-
     @Column(name = "last_scheduling", nullable = false)
     private LocalDateTime lastScheduling;
 }

@@ -19,9 +19,9 @@ public class MatchService {
         Map<Long, List<Long>> result = new HashMap<>();
         matchRepo.findAllByOwnerIds(ownerIds)
                 .forEach(match ->
-                        result.computeIfAbsent(match.getOwner().getId(), irnore -> new ArrayList<>())
+                        result.computeIfAbsent(match.getOwner().getId(), ignore -> new ArrayList<>())
                                 .add(match.getPartner().getId()));
-
+        return result;
     }
 
     public static Match createCorrect() {

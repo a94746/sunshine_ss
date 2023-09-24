@@ -35,11 +35,11 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
 
     @Query("SELECT a FROM Account a " +
             "LEFT JOIN FETCH a.matchesOwner " +
-            "LEFT JOIN FETCH a.matchesOwner.partner " +
-            "LEFT JOIN FETCH a.filter " +
-            "LEFT JOIN FETCH a.filter.relationsWithGenders " +
-            "LEFT JOIN FETCH a.filter.chatPrefs " +
-            "LEFT JOIN FETCH a.filter.relationsWithGenders.genders " +
+            "LEFT JOIN a.matchesOwner.partner " +
+            "LEFT JOIN a.filter " +
+            "LEFT JOIN a.filter.relationsWithGenders " +
+            "LEFT JOIN a.filter.chatPrefs " +
+            "LEFT JOIN a.filter.relationsWithGenders.genders " +
             "WHERE a.location.id = :locationId")
     List<Account> findForScheduling(Long locationId);
 }

@@ -1,6 +1,6 @@
-package com.vindie.sunshine_ss.common.timers;
+package com.vindie.sunshine_ss.common.timers.match;
 
-import com.vindie.sunshine_ss.common.ss_event.DailyMatchesSsEvent;
+import com.vindie.sunshine_ss.common.event.ss.DailyMatchesSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.scheduling.service.SchService;
@@ -17,16 +17,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * тут мы переносим внесённые вручную записи в таблицу eventLine в таблицу Queue
+ * тут мы переносим внесённые вручную записи из таблицы eventLine в таблицу Queue
  */
 @Service
 @AllArgsConstructor
 @Slf4j
 public class DailyMatchTimer {
-    public static final int INTERVAL_MIN = 11;
-    public LocalTime schTimeFrom = LocalTime.of(6,0,0);
-    public LocalTime schTimeTo = LocalTime.of(8,0,0);
-    public static final long DIFFERENCE = ChronoUnit.HOURS.between(schTimeFrom, schTimeTo);
+    public static final int INTERVAL_MIN = 31;
+    public static LocalTime schTimeFrom = LocalTime.of(6,0,0);
+    public static LocalTime schTimeTo = LocalTime.of(8,0,0);
 
     private LocationRepo locationRepo;
     private SchService schService;
@@ -40,17 +39,14 @@ public class DailyMatchTimer {
                     var timeThere = LocalTime.now().plusHours(l.getTimeShift());
                     return timeThere.isAfter(schTimeFrom)
                             && timeThere.isBefore(schTimeTo)
-                            && !l.getScheduledNow()
-                            && ChronoUnit.HOURS.between(l.getLastScheduling(), LocalDateTime.now()) > DIFFERENCE + 1;
+                            && ChronoUnit.HOURS.between(l.getLastScheduling(), LocalDateTime.now()) > 23;
                 })
                 .toList();
-        locations.forEach(l -> l.setScheduledNow(true));
+        locations.forEach(l -> l.setLastScheduling(LocalDateTime.now()));
         locationRepo.saveAll(locations);
 
         locations.forEach(l -> {
             schService.runSch(l.getId());
-            l.setScheduledNow(false);
-            l.setLastScheduling(LocalDateTime.now());
             DailyMatchesSsEvent event = new DailyMatchesSsEvent(l.getId());
             eventPublisher.publishEvent(event);
         });

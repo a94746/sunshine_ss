@@ -1,4 +1,4 @@
-package com.vindie.sunshine_ss.common.timers;
+package com.vindie.sunshine_ss.common.timers.queue;
 
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.repo.EventLineRepo;

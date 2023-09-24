@@ -1,9 +1,9 @@
-package com.vindie.sunshine_ss.timer;
+package com.vindie.sunshine_ss.timer.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.common.ss_event.QueueElementsUpdateSsEvent;
-import com.vindie.sunshine_ss.common.ss_event.SsEvent;
-import com.vindie.sunshine_ss.common.timers.QueueParserTimer;
+import com.vindie.sunshine_ss.common.event.ss.QueueElementsUpdateSsEvent;
+import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
@@ -39,7 +39,7 @@ class QueueParserTimerTest extends WithDbData {
     }
 
     @Test
-    void parse_event_line_for_location_test() {
+    void parse_event_line_for_location_without_notif_test() {
         EventLine eventLine = DataUtils
                 .newTypicalEventLine(null, account.getLocation().getId(), false, true);
         eventLineRepo.save(eventLine);
@@ -63,6 +63,22 @@ class QueueParserTimerTest extends WithDbData {
                         throw new RuntimeException();
                     }
                 });
+    }
+
+    @Test
+    void parse_event_line_for_location_with_notif_test() {
+        EventLine eventLine = DataUtils
+                .newTypicalEventLine(null, account.getLocation().getId(), true, false);
+        eventLineRepo.save(eventLine);
+        assertEquals(1, eventLineRepo.findAll().size());
+        queueParserTimer.timer();
+        List<EventLine> eventLines = eventLineRepo.findAll();
+        assertEquals(1, eventLines.size());
+        List<Long> peopleOnLocation = accountRepo.findAll()
+                .stream()
+                .filter(ac -> ac.getLocation().getId().equals(account.getLocation().getId()))
+                .map(Account::getId)
+                .toList();
 
         checkEvent(peopleOnLocation);
     }

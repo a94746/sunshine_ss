@@ -58,7 +58,7 @@ public class SchParser {
                         .toList())
                 .flatMap(Collection::stream)
                 .forEach(pair ->
-                        result.computeIfAbsent(pair.getFirst(), irnore -> new HashSet<>()).add(pair.getSecond()));
+                        result.computeIfAbsent(pair.getFirst(), ignore -> new HashSet<>()).add(pair.getSecond()));
         return result;
     }
 }

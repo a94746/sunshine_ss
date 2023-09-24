@@ -21,6 +21,6 @@ public interface MatchRepo extends JpaRepository<Match, Long> {
     @Query("SELECT m FROM Match m " +
             "LEFT JOIN FETCH m.owner " +
             "LEFT JOIN FETCH m.partner " +
-            "WHERE m.ownerId IN (:ownerIds)")
+            "WHERE m.owner.id IN (:ownerIds)")
     List<Match> findAllByOwnerIds(List<Long> ownerIds);
 }

@@ -1,4 +1,4 @@
-package com.vindie.sunshine_ss.common.timers;
+package com.vindie.sunshine_ss.common.timers.account;
 
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import lombok.AllArgsConstructor;

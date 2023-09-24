@@ -1,7 +1,7 @@
-package com.vindie.sunshine_ss.timer;
+package com.vindie.sunshine_ss.timer.account;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.common.timers.AccountPremCleanerTimer;
+import com.vindie.sunshine_ss.common.timers.account.AccountPremCleanerTimer;
 import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;

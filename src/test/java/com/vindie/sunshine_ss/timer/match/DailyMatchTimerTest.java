@@ -1,6 +1,8 @@
-package com.vindie.sunshine_ss.timer;
+package com.vindie.sunshine_ss.timer.match;
 
-import com.vindie.sunshine_ss.common.timers.DailyMatchTimer;
+import com.vindie.sunshine_ss.common.event.ss.DailyMatchesSsEvent;
+import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.timers.match.DailyMatchTimer;
 import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.match.MatchRepo;
@@ -10,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DailyMatchTimerTest extends WithDbData {
@@ -22,7 +24,7 @@ class DailyMatchTimerTest extends WithDbData {
     private LocationRepo locationRepo;
 
     @Test
-    void account_cleaner_timer_test() {
+    void daily_match_timer_test() {
         var matchesBefore = matchRepo.findAll();
         var location = locationRepo.findAll().get(0);
         location.setLastScheduling(LocalDateTime.now().minusDays(2));
@@ -33,7 +35,10 @@ class DailyMatchTimerTest extends WithDbData {
         dailyMatchTimer.timer();
 
         assertTrue(matchesBefore.size() < matchRepo.findAll().size());
-        assertFalse(locationRepo.findById(location.getId()).get().getScheduledNow());
         assertTrue(locationRepo.findById(location.getId()).get().getLastScheduling().isAfter(location.getLastScheduling()));
+
+        checkEverySec().until(() -> eventEquals(SsEvent.Type.DAILY_MATCHES));
+        DailyMatchesSsEvent event = (DailyMatchesSsEvent) getEventAndClean();
+        assertEquals(location.getId(), event.getLocationId());
     }
 }

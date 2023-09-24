@@ -1,8 +1,8 @@
-package com.vindie.sunshine_ss.common.timers;
+package com.vindie.sunshine_ss.common.timers.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
-import com.vindie.sunshine_ss.common.ss_event.QueueElementsUpdateSsEvent;
+import com.vindie.sunshine_ss.common.event.ss.QueueElementsUpdateSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
@@ -95,7 +95,9 @@ public class QueueParserTimer {
                 .toList();
         queueElementRepo.saveAll(queueElements);
 
-        QueueElementsUpdateSsEvent event = new QueueElementsUpdateSsEvent(accIds);
-        eventPublisher.publishEvent(event);
+        if (Boolean.TRUE.equals(eventLine.getNotification())) {
+            QueueElementsUpdateSsEvent event = new QueueElementsUpdateSsEvent(accIds);
+            eventPublisher.publishEvent(event);
+        }
     }
 }

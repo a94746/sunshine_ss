@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss;
 
 import com.github.javafaker.Faker;
-import com.vindie.sunshine_ss.common.ss_event.SsEvent;
+import com.vindie.sunshine_ss.common.event.ss.SsEvent;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;
 import com.vindie.sunshine_ss.utils.EventUtils;
 import org.awaitility.core.ConditionFactory;

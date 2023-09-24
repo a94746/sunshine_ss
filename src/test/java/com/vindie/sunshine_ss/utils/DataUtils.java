@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class DataUtils {
     public static final Faker FAKER = Faker.instance();
     public static final Random RANDOM = new Random();
+    private static int index = 0;
 
     public static Account newTypicalAccount(Location location) {
         return newTypicalAccount(RANDOM.nextInt(5), RANDOM.nextInt(7), RANDOM.nextInt(1) + 1, location);
@@ -46,9 +47,10 @@ public class DataUtils {
         boolean prem = RANDOM.nextInt(10) < 3;
         Gender gender = getRandomElement(Gender.values());
         acc.setGender(gender);
-        acc.setMatchesNum(prem
+        acc.setMatchesNum(gender.getMatchesNum());
+        acc.setPremMatchesNum(prem
                 ? gender.getPremMatchesNum()
-                : gender.getMatchesNum());
+                : null);
         acc.setViews(RANDOM.nextInt(100) );
         acc.setLikes(acc.getViews() == 0 ? 0 : acc.getViews() - RANDOM.nextInt(acc.getViews()));
         acc.setLastPresence(LocalDateTime.now());
@@ -79,11 +81,9 @@ public class DataUtils {
         return acc;
     }
 
-    private static int index = 0;
     public static Location newTypicalLocation() {
         Location location = new Location();
         location.setLastScheduling(LocalDateTime.now());
-        location.setScheduledNow(false);
         location.setTimeShift((byte) FAKER.number().randomDigit());
         location.setName(FAKER.address().cityName() + index++);
         return location;
@@ -138,7 +138,7 @@ public class DataUtils {
 
     private static Cread newTypicalCread(Account owner) {
         Cread cread = new Cread();
-        cread.setEmail(FAKER.company().name());
+        cread.setEmail(FAKER.company().name() + index++);
         cread.setPass("12345678");
         cread.setEmailCode(null);
         cread.setOwner(owner);
