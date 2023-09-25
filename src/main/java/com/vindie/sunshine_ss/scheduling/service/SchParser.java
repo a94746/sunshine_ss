@@ -38,7 +38,7 @@ public class SchParser {
                         Math.toIntExact(ChronoUnit.HOURS.between(e.getKey().getLastPresence(), LocalDateTime.now())),
                         Math.toIntExact(ChronoUnit.YEARS.between(e.getKey().getBday(), LocalDate.now())),
                         e.getKey().getGender(),
-                        e.getKey().getRating(),
+                        e.getKey().getRating().floatValue(),
                         e.getValue(),
                         AccountService.isPrem(e.getKey()) ? e.getKey().getPremMatchesNum() : e.getKey().getMatchesNum(),
                         AccountService.isPrem(e.getKey()),

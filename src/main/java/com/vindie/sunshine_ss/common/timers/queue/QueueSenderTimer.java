@@ -30,11 +30,13 @@ public class QueueSenderTimer {
     @Transactional
     @Scheduled(fixedRate = INTERVAL_MINS, timeUnit = TimeUnit.MINUTES)
     public void timer() {
+        log.info("Start QueueSenderTimer");
         Map<Long, List<QueueElement>> toSend = queueElementRepo.findAllNotifs()
                 .stream()
                 .collect(Collectors.groupingBy(qe -> qe.getOwner().getId()));
         List<Long> queueElementIds = realTimeSederUI.send(toSend);
         if (CollectionUtils.isEmpty(queueElementIds)) return;
         queueElementRepo.deleteByIdIn(queueElementIds);
+        log.info("End QueueSenderTimer");
     }
 }

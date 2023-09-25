@@ -22,7 +22,9 @@ public class AccountPremCleanerTimer {
     @Transactional
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
+        log.info("Start AccountPremCleanerTimer");
         LocalDateTime now = LocalDateTime.now();
         accountRepo.deleteOverduePrem(now);
+        log.info("End AccountPremCleanerTimer");
     }
 }

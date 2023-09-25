@@ -42,11 +42,13 @@ public class QueueParserTimer {
     @Transactional
     @Scheduled(fixedRate = INTERVAL_MIN, timeUnit = TimeUnit.MINUTES)
     public void timer() {
+        log.info("Start QueueParserTimer");
         List<EventLine> eventLines = eventLineRepo.findAll();
         if (isEmpty(eventLines)) return;
         eventLines.stream()
                 .filter(ev -> FALSE.equals(ev.getProcessed()))
                 .forEach(this::process);
+        log.info("End QueueParserTimer");
     }
 
     private void process(EventLine ev) {

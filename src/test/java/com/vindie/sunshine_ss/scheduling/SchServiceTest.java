@@ -57,11 +57,11 @@ class SchServiceTest extends SunshineSsApplicationTests {
                         entry.getValue().add(acc2.getId());
                     }
                 });
-        Instant startSch = Instant.now();
+        Instant start = Instant.now();
         Collection<SchAccount> parseToResult = SchParser.parseTo(accs2avoidMatches);
         Map<Long, Set<Long>> schResult = schService.calculate(parseToResult);
         Collection<Pair<Long, Long>> parseFromResult = SchParser.parseFrom(schResult);
-        long timeSch = Duration.between(startSch, Instant.now()).getSeconds();
+        Duration timeSch = Duration.between(start, Instant.now());
 
         List<Pair<Account, List<Account>>> result = parseFromResult.stream()
                 .map(pair -> {
@@ -93,6 +93,6 @@ class SchServiceTest extends SunshineSsApplicationTests {
         log.info("-------SCH MATCHES_PERCENT = {} %", MATCHES_PERCENT);
         log.info("");
         log.info("-------SCH succeed = {} accounts, {} %", result.size(), (100 * result.size()) / ACCOUNT_NUM);
-        log.info("-------SCH timeSch = {} sec", timeSch);
+        log.info("-------SCH timeSch = {} sec ", timeSch.getNano() * 0.000000001D);
     }
 }

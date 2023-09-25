@@ -4,6 +4,7 @@ import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Set;
 
@@ -16,6 +17,7 @@ public class RelationWithGenders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "filter_id", nullable = false)
     private Filter filter;

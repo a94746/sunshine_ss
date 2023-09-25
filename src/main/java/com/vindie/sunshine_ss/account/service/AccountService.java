@@ -34,9 +34,8 @@ public class AccountService {
         Account acc = new Account();
         acc.setViews(0);
         acc.setLikes(0);
-        acc.setRating((byte) 50);
+        acc.setRating(50D);
         acc.setDeleted(false);
-        acc.setWithoutActualMatches(false);
         return acc;
     }
 

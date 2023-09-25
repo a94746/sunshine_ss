@@ -3,6 +3,7 @@ package com.vindie.sunshine_ss.match;
 import com.vindie.sunshine_ss.account.dto.Account;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,10 +19,12 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private Account owner;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "partner_id", nullable = false)
     private Account partner;

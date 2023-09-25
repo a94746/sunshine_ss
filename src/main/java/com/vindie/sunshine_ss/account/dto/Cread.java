@@ -4,6 +4,7 @@ package com.vindie.sunshine_ss.account.dto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "creads")
@@ -20,6 +21,7 @@ public class Cread {
     @Column(name = "pass", nullable = false)
     private String pass;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "cread")
     private Account owner;

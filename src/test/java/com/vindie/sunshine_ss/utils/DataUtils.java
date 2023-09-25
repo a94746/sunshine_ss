@@ -18,6 +18,8 @@ import com.vindie.sunshine_ss.match.MatchService;
 import com.vindie.sunshine_ss.pic.Pic;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +44,13 @@ public class DataUtils {
                 .minusDays(RANDOM.nextInt(365)));
         acc.setDescription(FAKER.company().catchPhrase());
         acc.setLang(Language.EN);
-        acc.setRating((byte) (1 + RANDOM.nextInt(99)));
+        acc.setViews(RANDOM.nextInt(100) );
+        acc.setLikes(acc.getViews() == 0 ? 0 : acc.getViews() - RANDOM.nextInt(acc.getViews()));
+        acc.setRating(acc.getLikes() >= 3
+                ? BigDecimal.valueOf(RANDOM.nextDouble(99))
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue()
+                : 50);
 
         boolean prem = RANDOM.nextInt(10) < 3;
         Gender gender = getRandomElement(Gender.values());
@@ -51,8 +59,6 @@ public class DataUtils {
         acc.setPremMatchesNum(prem
                 ? gender.getPremMatchesNum()
                 : null);
-        acc.setViews(RANDOM.nextInt(100) );
-        acc.setLikes(acc.getViews() == 0 ? 0 : acc.getViews() - RANDOM.nextInt(acc.getViews()));
         acc.setLastPresence(LocalDateTime.now());
         acc.setLocation(location);
 

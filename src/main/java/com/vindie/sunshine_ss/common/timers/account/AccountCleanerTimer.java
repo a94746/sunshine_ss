@@ -23,8 +23,10 @@ public class AccountCleanerTimer {
     @Transactional
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
+        log.info("Start AccountCleanerTimer");
         LocalDateTime older = LocalDateTime.now().minusDays(TTL_DAYS);
         List<Long> ids = accountRepo.findOlder(older);
         accountRepo.deleteAllById(ids);
+        log.info("End AccountCleanerTimer");
     }
 }

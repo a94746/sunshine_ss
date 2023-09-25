@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DailyMatchTimerTest extends WithDbData {
@@ -34,11 +34,11 @@ class DailyMatchTimerTest extends WithDbData {
         dailyMatchTimer.schTimeTo = LocalTime.of(23,59,59);
         dailyMatchTimer.timer();
 
-        assertTrue(matchesBefore.size() < matchRepo.findAll().size());
+        checkEverySec(30).until(() -> matchesBefore.size() < matchRepo.findAll().size());
         assertTrue(locationRepo.findById(location.getId()).get().getLastScheduling().isAfter(location.getLastScheduling()));
 
         checkEverySec().until(() -> eventEquals(SsEvent.Type.DAILY_MATCHES));
         DailyMatchesSsEvent event = (DailyMatchesSsEvent) getEventAndClean();
-        assertEquals(location.getId(), event.getLocationId());
+        assertFalse(event.getAccIds().isEmpty());
     }
 }

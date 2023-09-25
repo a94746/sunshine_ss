@@ -6,6 +6,7 @@ import com.vindie.sunshine_ss.common.dto.Gender;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Collection;
 import java.util.Set;
@@ -19,6 +20,7 @@ public class Filter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "filter")
     private Account owner;
@@ -29,6 +31,7 @@ public class Filter {
     @Column(name = "age_to", nullable = false)
     private Byte ageTo;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "filter", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<RelationWithGenders> relationsWithGenders;
 

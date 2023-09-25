@@ -4,6 +4,7 @@ import com.vindie.sunshine_ss.account.dto.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,6 +24,7 @@ public class QueueElement {
     @JoinColumn(name = "event_line_id", nullable = false)
     private EventLine eventLine;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

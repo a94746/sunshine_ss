@@ -10,6 +10,7 @@ import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -58,12 +59,6 @@ public class Account {
     @Column(name = "deleted", nullable = false)
     private Boolean deleted;
 
-    /**
-     * at the last scheduling, he participated in it, but nothing was found according to his filters
-     */
-    @Column(name = "without_actual_matches", nullable = false)
-    private Boolean withoutActualMatches;
-
 
 
     @Column(name = "likes", nullable = false)
@@ -73,7 +68,7 @@ public class Account {
     private Integer views;
 
     @Column(name = "rating", nullable = false)
-    private Byte rating;
+    private Double rating;
 
 
 
@@ -87,37 +82,44 @@ public class Account {
     private LocalDateTime premTill;
 
 
-
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "filter_id", nullable = false, unique = true)
     private Filter filter;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Collection<Contact> contacts;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Collection<Device> devices;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cread_id", nullable = false, unique = true)
     private Cread cread;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private Collection<Pic> pics;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Collection<Match> matchesOwner;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "partner", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Collection<Match> matchesPartner;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Collection<QueueElement> queueElements;

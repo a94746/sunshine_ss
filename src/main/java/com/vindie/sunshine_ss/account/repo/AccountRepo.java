@@ -34,7 +34,7 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     void fakeDelete(Long id);
 
     @Query("SELECT a FROM Account a " +
-            "LEFT JOIN FETCH a.matchesOwner " +
+            "LEFT JOIN a.matchesOwner " +
             "LEFT JOIN a.matchesOwner.partner " +
             "LEFT JOIN a.filter " +
             "LEFT JOIN a.filter.relationsWithGenders " +

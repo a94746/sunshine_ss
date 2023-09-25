@@ -29,6 +29,7 @@ public class QueueCleanerTimer {
     @Transactional
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
+        log.info("Start QueueCleanerTimer");
         LocalDate older = LocalDate.now().minusDays(TTL_DAYS);
         queueElementRepo.deleteOlder(older);
 
@@ -38,5 +39,6 @@ public class QueueCleanerTimer {
                 .filter(ev -> queueElementRepo.findFirstByEventLineId(ev.getId()).isEmpty())
                 .toList();
         eventLineRepo.deleteAll(eventLines);
+        log.info("End QueueCleanerTimer");
     }
 }

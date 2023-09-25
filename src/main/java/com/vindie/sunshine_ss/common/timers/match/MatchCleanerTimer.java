@@ -22,7 +22,9 @@ public class MatchCleanerTimer {
     @Transactional
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
+        log.info("Start MatchCleanerTimer");
         LocalDateTime older = LocalDateTime.now().minusDays(TTL_DAYS);
         matchRepo.deleteOlder(older);
+        log.info("End MatchCleanerTimer");
     }
 }

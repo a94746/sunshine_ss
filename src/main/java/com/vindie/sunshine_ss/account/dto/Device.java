@@ -3,6 +3,7 @@ package com.vindie.sunshine_ss.account.dto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,6 +19,7 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

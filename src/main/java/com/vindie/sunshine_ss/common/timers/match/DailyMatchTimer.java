@@ -1,6 +1,5 @@
 package com.vindie.sunshine_ss.common.timers.match;
 
-import com.vindie.sunshine_ss.common.event.ss.DailyMatchesSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.scheduling.service.SchService;
@@ -33,6 +32,7 @@ public class DailyMatchTimer {
 
     @Scheduled(fixedRate = INTERVAL_MIN, timeUnit = TimeUnit.MINUTES)
     public void timer() {
+        log.info("Start DailyMatchTimer");
         List<Location> locations = locationRepo.findAll()
                 .stream()
                 .filter(l -> {
@@ -42,14 +42,7 @@ public class DailyMatchTimer {
                             && ChronoUnit.HOURS.between(l.getLastScheduling(), LocalDateTime.now()) > 23;
                 })
                 .toList();
-        locations.forEach(l -> l.setLastScheduling(LocalDateTime.now()));
-        locationRepo.saveAll(locations);
 
-        locations.forEach(l -> {
-            schService.runSch(l.getId());
-            DailyMatchesSsEvent event = new DailyMatchesSsEvent(l.getId());
-            eventPublisher.publishEvent(event);
-        });
-        locationRepo.saveAll(locations);
+        locations.forEach(schService::runSch);
     }
 }

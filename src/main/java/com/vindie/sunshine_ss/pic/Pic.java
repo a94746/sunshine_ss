@@ -4,6 +4,7 @@ import com.vindie.sunshine_ss.account.dto.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "pics")
@@ -14,6 +15,7 @@ public class Pic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
