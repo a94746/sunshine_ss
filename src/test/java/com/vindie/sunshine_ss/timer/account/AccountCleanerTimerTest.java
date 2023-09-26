@@ -32,14 +32,18 @@ class AccountCleanerTimerTest extends WithDbData {
 
         account.setLastPresence(LocalDateTime.now().minusDays(AccountCleanerTimer.TTL_DAYS + 1));
         accountRepo.save(account);
+        var devicesBefore = deviceRepo.findAllByOwnerId(account.getId());
+        assertFalse(devicesBefore.isEmpty());
 
         accountCleanerTimer.timer();
+
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
         assertFalse(accountRepo.findById(account.getId()).isPresent());
 
         assertTrue(filterRepo.findByOwnerId(account.getId()).isEmpty());
         assertTrue(matchRepo.findAllByOwnerId(account.getId()).isEmpty());
         assertTrue(deviceRepo.findAllByOwnerId(account.getId()).isEmpty());
+        assertEquals(devicesBefore.size(), deviceRepo.findAllByLogoutOwnerId(account.getId()).size());
         assertTrue(contactRepo.findAllByOwnerIdIn(List.of(account.getId())).isEmpty());
     }
 }

@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface DeviceRepo extends JpaRepository<Device, Long> {
 
+    List<Device> findAllByLogoutOwnerId(Long ownerIdLogout);
     List<Device> findAllByOwnerId(Long ownerId);
+    List<Device> findAllByOwnerIdIn(List<Long> ownerIds);
 }

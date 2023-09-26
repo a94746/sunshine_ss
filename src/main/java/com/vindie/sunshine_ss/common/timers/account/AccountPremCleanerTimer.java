@@ -25,6 +25,6 @@ public class AccountPremCleanerTimer {
         log.info("Start AccountPremCleanerTimer");
         LocalDateTime now = LocalDateTime.now();
         accountRepo.deleteOverduePrem(now);
-        log.info("End AccountPremCleanerTimer");
+        log.info("End   AccountPremCleanerTimer");
     }
 }

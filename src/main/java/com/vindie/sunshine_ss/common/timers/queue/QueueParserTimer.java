@@ -44,11 +44,14 @@ public class QueueParserTimer {
     public void timer() {
         log.info("Start QueueParserTimer");
         List<EventLine> eventLines = eventLineRepo.findAll();
-        if (isEmpty(eventLines)) return;
+        if (isEmpty(eventLines)) {
+            log.info("End   QueueParserTimer  - empty");
+            return;
+        }
         eventLines.stream()
                 .filter(ev -> FALSE.equals(ev.getProcessed()))
                 .forEach(this::process);
-        log.info("End QueueParserTimer");
+        log.info("End   QueueParserTimer");
     }
 
     private void process(EventLine ev) {

@@ -95,7 +95,7 @@ public class Account {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
     private Collection<Device> devices;
 
     @ToString.Exclude

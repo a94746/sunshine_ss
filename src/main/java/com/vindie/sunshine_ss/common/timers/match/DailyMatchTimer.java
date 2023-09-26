@@ -32,7 +32,7 @@ public class DailyMatchTimer {
 
     @Scheduled(fixedRate = INTERVAL_MIN, timeUnit = TimeUnit.MINUTES)
     public void timer() {
-        log.info("Start DailyMatchTimer");
+        log.info("Start DailyMatchTimer (ASYNC)");
         List<Location> locations = locationRepo.findAll()
                 .stream()
                 .filter(l -> {

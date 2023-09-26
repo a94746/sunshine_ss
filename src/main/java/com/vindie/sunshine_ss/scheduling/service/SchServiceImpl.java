@@ -71,7 +71,7 @@ public class SchServiceImpl implements SchService {
         DailyMatchesSsEvent event = new DailyMatchesSsEvent(schResult.keySet());
         eventPublisher.publishEvent(event);
         matchRepo.saveAll(mathes);
-        log.info("End runSch for: {} in {} sec", location.getName(), Duration.between(start, Instant.now()).getNano() * 0.000000001D);
+        log.info("End   runSch for: {} in {} sec", location.getName(), Duration.between(start, Instant.now()).getNano() * 0.000000001D);
     }
 
     @Override

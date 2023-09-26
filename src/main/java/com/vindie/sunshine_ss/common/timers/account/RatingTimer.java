@@ -46,7 +46,7 @@ public class RatingTimer {
             }
             accountRepo.saveAll(accounts);
         }
-        log.info("End RatingTimer");
+        log.info("End   RatingTimer");
     }
 
     private static double calculateRating(Long num, Long allCount) {

@@ -39,6 +39,6 @@ public class QueueCleanerTimer {
                 .filter(ev -> queueElementRepo.findFirstByEventLineId(ev.getId()).isEmpty())
                 .toList();
         eventLineRepo.deleteAll(eventLines);
-        log.info("End QueueCleanerTimer");
+        log.info("End   QueueCleanerTimer");
     }
 }

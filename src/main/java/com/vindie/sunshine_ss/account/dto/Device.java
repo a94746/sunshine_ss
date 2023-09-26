@@ -22,7 +22,7 @@ public class Device {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "owner_id")
     private Account owner;
 
     @CreatedDate
@@ -43,4 +43,7 @@ public class Device {
 
     @Column(name = "app_version", nullable = false)
     private String appVersion;
+
+    @Column(name = "logout_owner_id")
+    private Long logoutOwnerId;
 }

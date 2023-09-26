@@ -25,6 +25,6 @@ public class MatchCleanerTimer {
         log.info("Start MatchCleanerTimer");
         LocalDateTime older = LocalDateTime.now().minusDays(TTL_DAYS);
         matchRepo.deleteOlder(older);
-        log.info("End MatchCleanerTimer");
+        log.info("End   MatchCleanerTimer");
     }
 }

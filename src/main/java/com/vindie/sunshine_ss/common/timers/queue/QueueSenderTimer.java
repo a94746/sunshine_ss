@@ -35,8 +35,11 @@ public class QueueSenderTimer {
                 .stream()
                 .collect(Collectors.groupingBy(qe -> qe.getOwner().getId()));
         List<Long> queueElementIds = realTimeSederUI.send(toSend);
-        if (CollectionUtils.isEmpty(queueElementIds)) return;
+        if (CollectionUtils.isEmpty(queueElementIds)) {
+            log.info("End   QueueSenderTimer - empty");
+            return;
+        }
         queueElementRepo.deleteByIdIn(queueElementIds);
-        log.info("End QueueSenderTimer");
+        log.info("End   QueueSenderTimer");
     }
 }
