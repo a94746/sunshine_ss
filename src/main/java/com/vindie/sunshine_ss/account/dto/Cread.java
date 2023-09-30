@@ -2,13 +2,14 @@ package com.vindie.sunshine_ss.account.dto;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "creads")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cread {
 
     @Id
@@ -25,7 +26,4 @@ public class Cread {
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "cread")
     private Account owner;
-
-    @Column(name = "email_code")
-    private Byte emailCode;
 }

@@ -1,13 +1,14 @@
 package com.vindie.sunshine_ss.account.dto;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "contacts")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Contact {
 
     @Id

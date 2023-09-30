@@ -1,8 +1,8 @@
 package com.vindie.sunshine_ss.timer.match;
 
 import com.vindie.sunshine_ss.account.dto.Account;
+import com.vindie.sunshine_ss.base.WithDbData;
 import com.vindie.sunshine_ss.common.timers.match.MatchCleanerTimer;
-import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.match.Match;
 import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.vindie.sunshine_ss.interfaces;
+package com.vindie.sunshine_ss.base;
 
 import com.vindie.sunshine_ss.SunshineSsApplicationTests;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -133,7 +133,7 @@ public class DataUtils {
     }
     private static Device newTypicalDevice(Account owner) {
         Device device = new Device();
-        device.setAndroidId(FAKER.app().version());
+        device.setUniqueId(FAKER.app().version() + index++);
         device.setImei(null);
         device.setWifiMac(FAKER.app().version());
         device.setPhoneNum(FAKER.phoneNumber().phoneNumber());
@@ -146,7 +146,6 @@ public class DataUtils {
         Cread cread = new Cread();
         cread.setEmail(FAKER.company().name() + index++);
         cread.setPass("12345678");
-        cread.setEmailCode(null);
         cread.setOwner(owner);
         return cread;
     }

@@ -1,10 +1,10 @@
 package com.vindie.sunshine_ss.timer.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
+import com.vindie.sunshine_ss.base.WithDbData;
 import com.vindie.sunshine_ss.common.event.ss.QueueElementsUpdateSsEvent;
 import com.vindie.sunshine_ss.common.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
-import com.vindie.sunshine_ss.interfaces.WithDbData;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import com.vindie.sunshine_ss.utils.DataUtils;

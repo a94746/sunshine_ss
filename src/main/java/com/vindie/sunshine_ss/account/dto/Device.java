@@ -1,9 +1,7 @@
 package com.vindie.sunshine_ss.account.dto;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,6 +10,9 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "devices")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Device {
 
@@ -29,8 +30,8 @@ public class Device {
     @Column(name = "first_entry", nullable = false)
     private LocalDate firstEntry;
 
-    @Column(name = "android_id")
-    private String androidId;
+    @Column(name = "unique_id", nullable = false, unique = true)
+    private String uniqueId;
 
     @Column(name = "imei")
     private String imei;

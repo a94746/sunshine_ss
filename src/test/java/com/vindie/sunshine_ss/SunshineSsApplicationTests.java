@@ -14,8 +14,10 @@ import org.springframework.test.context.TestPropertySource;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles("unit-test")
 @SpringBootTest(classes = SunshineSsApplication.class)
@@ -34,6 +36,15 @@ public abstract class SunshineSsApplicationTests {
     protected ConditionFactory checkEverySec(int timeoutInSec) {
         return await().pollInterval(1, TimeUnit.SECONDS)
                 .timeout(Duration.of(timeoutInSec, ChronoUnit.SECONDS));
+    }
+
+    protected void checkInSec(int timeoutInSec, Supplier<Boolean> supplier) {
+        try {
+            Thread.sleep(timeoutInSec * 1000L);
+            assertEquals(Boolean.TRUE, supplier.get());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected boolean eventEquals(SsEvent.Type type) {

@@ -8,19 +8,21 @@ import com.vindie.sunshine_ss.match.Match;
 import com.vindie.sunshine_ss.pic.Pic;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
 @Table(name = "accounts")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Account {
 
@@ -85,18 +87,18 @@ public class Account {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "filter_id", nullable = false, unique = true)
+    @JoinColumn(name = "filter_id", unique = true)
     private Filter filter;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.PERSIST)
-    private Collection<Contact> contacts;
+    private Collection<Contact> contacts = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
-    private Collection<Device> devices;
+    private Collection<Device> devices = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -107,20 +109,20 @@ public class Account {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-    private Collection<Pic> pics;
+    private Collection<Pic> pics = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE)
-    private Collection<Match> matchesOwner;
+    private Collection<Match> matchesOwner = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "partner", orphanRemoval = true, cascade = CascadeType.REMOVE)
-    private Collection<Match> matchesPartner;
+    private Collection<Match> matchesPartner = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE)
-    private Collection<QueueElement> queueElements;
+    private Collection<QueueElement> queueElements = new ArrayList<>();
 }

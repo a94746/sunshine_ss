@@ -1,4 +1,4 @@
-package com.vindie.sunshine_ss.interfaces;
+package com.vindie.sunshine_ss.base;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
@@ -27,7 +27,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class WithDbData extends WithSqlContener {
+public abstract class WithDbData extends WithDbContener {
     protected static final Random RANDOM = new Random();
 
     @Autowired

@@ -10,14 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class DatabaseCleaner {
-    private static final Set<String> RESTRICTED_TABLES = Stream.of("DATABASECHANGELOG").collect(Collectors.toSet());
+    private static final Set<String> RESTRICTED_TABLES = Set.of("DATABASECHANGELOG");
 
     private DataSource dataSource;
 
