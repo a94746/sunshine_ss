@@ -17,6 +17,9 @@ import com.vindie.sunshine_ss.match.Match;
 import com.vindie.sunshine_ss.match.MatchService;
 import com.vindie.sunshine_ss.pic.Pic;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,16 +29,20 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vindie.sunshine_ss.base.WithDbData.PASS;
 
+@Service
 public class DataUtils {
     public static final Faker FAKER = Faker.instance();
     public static final Random RANDOM = new Random();
-    private static int index = 0;
+    public static int index = 0;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public static Account newTypicalAccount(Location location) {
+    public Account newTypicalAccount(Location location) {
         return newTypicalAccount(RANDOM.nextInt(5), RANDOM.nextInt(7), RANDOM.nextInt(1) + 1, location);
     }
-    public static Account newTypicalAccount(int picsNum, int contactsNum, int devicesNum, Location location) {
+    public Account newTypicalAccount(int picsNum, int contactsNum, int devicesNum, Location location) {
         Account acc = AccountService.createCorrect();
         acc.setName(FAKER.name().firstName());
         acc.setBday(LocalDate.now()
@@ -87,7 +94,7 @@ public class DataUtils {
         return acc;
     }
 
-    public static Location newTypicalLocation() {
+    public Location newTypicalLocation() {
         Location location = new Location();
         location.setLastScheduling(LocalDateTime.now());
         location.setTimeShift((byte) FAKER.number().randomDigit());
@@ -95,7 +102,7 @@ public class DataUtils {
         return location;
     }
 
-    private static Filter newTypicalFilter(Account acc) {
+    private Filter newTypicalFilter(Account acc) {
         Filter filter = new Filter();
         filter.setAgeFrom((byte) (35 - RANDOM.nextInt(17)));
         filter.setAgeTo((byte) (35 + RANDOM.nextInt(30)));
@@ -116,7 +123,7 @@ public class DataUtils {
         return filter;
     }
 
-    private static Pic newTypicalPic(Account owner) {
+    private Pic newTypicalPic(Account owner) {
         Pic pic = new Pic();
         pic.setFile(FAKER.file().fileName().getBytes(StandardCharsets.UTF_8));
         pic.setNum((byte) FAKER.number().randomDigit());
@@ -124,14 +131,14 @@ public class DataUtils {
         return pic;
     }
 
-    private static Contact newTypicalContact(Account owner) {
+    private Contact newTypicalContact(Account owner) {
         Contact contact = new Contact();
         contact.setKey(FAKER.app().name());
         contact.setValue(FAKER.app().author());
         contact.setOwner(owner);
         return contact;
     }
-    private static Device newTypicalDevice(Account owner) {
+    private Device newTypicalDevice(Account owner) {
         Device device = new Device();
         device.setUniqueId(FAKER.app().version() + index++);
         device.setImei(null);
@@ -142,15 +149,15 @@ public class DataUtils {
         return device;
     }
 
-    private static Cread newTypicalCread(Account owner) {
+    private Cread newTypicalCread(Account owner) {
         Cread cread = new Cread();
-        cread.setEmail(FAKER.company().name() + index++);
-        cread.setPass("12345678");
+        cread.setEmail(FAKER.internet().safeEmailAddress(owner.getName()+ index++));
+        cread.setPass(passwordEncoder.encode(PASS));
         cread.setOwner(owner);
         return cread;
     }
 
-    public static Match newTypicalMatch(Account owner, Account partner) {
+    public Match newTypicalMatch(Account owner, Account partner) {
         Match match = MatchService.createCorrect();
         match.setOwner(owner);
         match.setPartner(partner);
@@ -158,7 +165,7 @@ public class DataUtils {
         return match;
     }
 
-    public static EventLine newTypicalEventLine(Long ownerId, Long locationId, Boolean notification, Boolean openingDialog) {
+    public EventLine newTypicalEventLine(Long ownerId, Long locationId, Boolean notification, Boolean openingDialog) {
         EventLine ev = new EventLine();
         ev.setTitle(FAKER.company().catchPhrase());
         ev.setText("Text: " + FAKER.company().catchPhrase());

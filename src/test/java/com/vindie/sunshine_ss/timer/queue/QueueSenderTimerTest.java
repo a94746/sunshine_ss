@@ -7,7 +7,6 @@ import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.common.timers.queue.QueueSenderTimer;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
-import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,8 +34,8 @@ class QueueSenderTimerTest extends WithDbData {
 
     @Test
     void queue_sender_timer_test() {
-        Account acc1 = accountRepo.save(DataUtils.newTypicalAccount(account.getLocation()));
-        EventLine eventLine = DataUtils
+        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
+        EventLine eventLine = dataUtils
                 .newTypicalEventLine(null, acc1.getLocation().getId(), true, false);
         eventLineRepo.save(eventLine);
         queueParserTimer.timer();

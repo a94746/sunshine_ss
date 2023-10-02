@@ -1,6 +1,10 @@
 package com.vindie.sunshine_ss;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
+import com.vindie.sunshine_ss.common.email.EmailSenderService;
 import com.vindie.sunshine_ss.common.event.ss.SsEvent;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;
 import com.vindie.sunshine_ss.utils.EventUtils;
@@ -8,6 +12,7 @@ import org.awaitility.core.ConditionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -24,10 +29,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestPropertySource(locations = "classpath:test.properties")
 public abstract class SunshineSsApplicationTests {
     protected static final Faker FAKER = Faker.instance();
+    protected static final ObjectMapper MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     @Autowired
     private DatabaseCleaner databaseCleaner;
     @Autowired
     private EventUtils eventUtils;
+    @MockBean
+    private EmailSenderService emailSenderService;
 
     protected ConditionFactory checkEverySec() {
         return checkEverySec(10);

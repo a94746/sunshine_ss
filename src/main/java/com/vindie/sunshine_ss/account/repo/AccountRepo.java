@@ -46,8 +46,15 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
             "AND a.filter IS NOT NULL")
     List<Account> findForScheduling(Long locationId);
 
-    @Query("SELECT new com.vindie.sunshine_ss.security.record.User(c.owner.id, c.owner.name, c.email, c.owner.lang, c.owner.gender, c.owner.premTill) " +
+    @Query("SELECT new com.vindie.sunshine_ss.security.record.User(c.owner.id, c.owner.name, c.email, c.pass, " +
+            "c.owner.lang, c.owner.gender, c.owner.premTill) " +
             "FROM Cread c " +
-            "WHERE c.email = :email")
+            "WHERE c.email = :email " +
+            "AND c.owner.deleted = FALSE")
     Optional<User> findUserByEmail(String email);
+
+    @Query("SELECT a FROM Account a " +
+            "LEFT JOIN FETCH a.cread " +
+            "LEFT JOIN FETCH a.devices")
+    List<Account> findAllWithCreadAndDevices();
 }

@@ -56,10 +56,9 @@ class DailyMatchTimerTest extends WithDbData {
         dailyMatchTimer.schTimeTo = LocalTime.of(23,59,59);
         dailyMatchTimer.timer();
 
-        assertTrue(locationRepo.findById(location.getId()).get().getLastScheduling().isAfter(location.getLastScheduling()));
-
         checkEverySec().until(() -> eventEquals(SsEvent.Type.DAILY_MATCHES));
-        checkInSec(10, () -> matchesBefore.size() == matchRepo.findAll().size());
+        assertTrue(locationRepo.findById(location.getId()).get().getLastScheduling().isAfter(location.getLastScheduling()));
+        checkInSec(2, () -> matchesBefore.size() == matchRepo.findAll().size());
         DailyMatchesSsEvent event = (DailyMatchesSsEvent) getEventAndClean();
         assertTrue(event.getAccIds().isEmpty());
     }

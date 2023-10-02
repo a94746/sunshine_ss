@@ -3,8 +3,7 @@ package com.vindie.sunshine_ss.security.record;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Language;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,17 +11,17 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
-@ToString
-@EqualsAndHashCode
+@Data
 @AllArgsConstructor
 public class User implements UserDetails {
 
-    private final long id;
-    private final String name;
-    private final String email;
-    private final Language lang;
-    private final Gender gender;
-    private final LocalDateTime premTill;
+    private long id;
+    private String name;
+    private String email;
+    private String pass;
+    private Language lang;
+    private Gender gender;
+    private LocalDateTime premTill;
 
     public boolean isPrem() {
         return premTill != null && LocalDateTime.now().isBefore(premTill);
@@ -35,7 +34,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return pass;
     }
 
     @Override

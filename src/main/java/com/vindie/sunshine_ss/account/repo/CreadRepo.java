@@ -4,6 +4,9 @@ import com.vindie.sunshine_ss.account.dto.Cread;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CreadRepo extends JpaRepository<Cread, Long> {
+    Optional<Cread> findFirstByEmail(String email);
 }

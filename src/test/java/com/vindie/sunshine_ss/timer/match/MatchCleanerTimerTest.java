@@ -4,7 +4,6 @@ import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.base.WithDbData;
 import com.vindie.sunshine_ss.common.timers.match.MatchCleanerTimer;
 import com.vindie.sunshine_ss.match.Match;
-import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,10 +19,10 @@ class MatchCleanerTimerTest extends WithDbData {
 
     @Test
     void match_cleaner_timer_test() {
-        Account acc1 = accountRepo.save(DataUtils.newTypicalAccount(account.getLocation()));
-        Account acc2 = accountRepo.save(DataUtils.newTypicalAccount(account.getLocation()));
-        Match match1 = DataUtils.newTypicalMatch(acc1, acc2);
-        Match match2 = DataUtils.newTypicalMatch(acc2, acc1);
+        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
+        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
+        Match match1 = dataUtils.newTypicalMatch(acc1, acc2);
+        Match match2 = dataUtils.newTypicalMatch(acc2, acc1);
         matchRepo.saveAll(List.of(match1, match2));
         List<Match> matches = matchRepo.findAll()
                 .stream()

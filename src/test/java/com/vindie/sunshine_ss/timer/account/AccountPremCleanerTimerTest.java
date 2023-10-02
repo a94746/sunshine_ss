@@ -3,7 +3,6 @@ package com.vindie.sunshine_ss.timer.account;
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.base.WithDbData;
 import com.vindie.sunshine_ss.common.timers.account.AccountPremCleanerTimer;
-import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +17,7 @@ class AccountPremCleanerTimerTest extends WithDbData {
     @Test
     void account_cleaner_timer_test() {
         final byte premMatchesNum = 10;
-        Account acc2 = DataUtils.newTypicalAccount(account.getLocation());
+        Account acc2 = dataUtils.newTypicalAccount(account.getLocation());
         acc2.setPremMatchesNum(premMatchesNum);
         acc2.setPremTill(LocalDateTime.now().minusHours(1));
         accountRepo.save(acc2);

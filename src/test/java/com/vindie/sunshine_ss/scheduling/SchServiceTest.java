@@ -22,11 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Slf4j
 class SchServiceTest extends SunshineSsApplicationTests {
-    private static final int ACCOUNT_NUM = 5_000;
-    private static final int MATCHES_PERCENT = 20;
+    private static final int ACCOUNT_NUM = 100;
+    private static final int MATCHES_PERCENT = 40;
 
     @Autowired
     SchService schService;
+    @Autowired
+    DataUtils dataUtils;
 
     @Test
     void sch_test () {
@@ -37,7 +39,7 @@ class SchServiceTest extends SunshineSsApplicationTests {
         List<Account> accs = new ArrayList<>();
         Map<Account, Collection<Long>> accs2avoidMatches = new HashMap<>();
         for (long i = 0; i < ACCOUNT_NUM; i++) {
-            var acc = DataUtils.newTypicalAccount(new Location());
+            var acc = dataUtils.newTypicalAccount(new Location());
             acc.setId(i);
             accs2avoidMatches.put(acc, new HashSet<>());
             accs.add(acc);

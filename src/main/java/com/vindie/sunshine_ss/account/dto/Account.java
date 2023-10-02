@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -98,7 +99,7 @@ public class Account {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
-    private Collection<Device> devices = new ArrayList<>();
+    private List<Device> devices = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

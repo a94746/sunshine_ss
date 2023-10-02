@@ -5,7 +5,6 @@ import com.vindie.sunshine_ss.base.WithDbData;
 import com.vindie.sunshine_ss.common.timers.account.AccountCleanerTimer;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
-import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,9 +21,9 @@ class AccountCleanerTimerTest extends WithDbData {
 
     @Test
     void account_cleaner_timer_test() {
-        Account acc2 = accountRepo.save(DataUtils.newTypicalAccount(account.getLocation()));
+        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
-        EventLine eventLine = DataUtils
+        EventLine eventLine = dataUtils
                 .newTypicalEventLine(account.getId(), null, true, false);
         eventLineRepo.save(eventLine);
         queueParserTimer.timer();

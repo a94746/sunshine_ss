@@ -28,8 +28,11 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class WithDbData extends WithDbContener {
+    public static final String PASS = "12345678";
     protected static final Random RANDOM = new Random();
 
+    @Autowired
+    protected DataUtils dataUtils;
     @Autowired
     protected AccountRepo accountRepo;
     @Autowired
@@ -63,7 +66,7 @@ public abstract class WithDbData extends WithDbContener {
 
         List<Location> locations = new ArrayList<>();
         for (int i = 0; i < locationsNum; i++) {
-            locations.add(DataUtils.newTypicalLocation());
+            locations.add(dataUtils.newTypicalLocation());
         }
         locationRepo.saveAll(locations);
         assertEquals(locationsNum, locationRepo.findAll().size());
@@ -71,7 +74,7 @@ public abstract class WithDbData extends WithDbContener {
         List<Account> accounts = new ArrayList<>();
         for (int i = 0; i < accountsNum; i++) {
             Location location = DataUtils.getRandomElement(locations);
-            accounts.add(DataUtils.newTypicalAccount(location));
+            accounts.add(dataUtils.newTypicalAccount(location));
         }
         accountRepo.saveAll(accounts);
         assertEquals(accountsNum, accountRepo.findAll().size());
@@ -108,13 +111,13 @@ public abstract class WithDbData extends WithDbContener {
 
         List<Match> matches = new ArrayList<>();
         for (int i = 0; i < matchPairsNum; i++) {
-            matches.add(DataUtils.newTypicalMatch(accounts.get(i), accounts.get(i+1)));
-            matches.add(DataUtils.newTypicalMatch(accounts.get(i+1), accounts.get(i)));
+            matches.add(dataUtils.newTypicalMatch(accounts.get(i), accounts.get(i+1)));
+            matches.add(dataUtils.newTypicalMatch(accounts.get(i+1), accounts.get(i)));
         }
         matchRepo.saveAll(matches);
         assertEquals(matchPairsNum * 2, matchRepo.findAll().size());
         assertEquals(accountsNum, accountRepo.findAll().size());
-        account = accountRepo.findAll()
+        account = accountRepo.findAllWithCreadAndDevices()
                 .stream()
                 .findFirst()
                 .orElseThrow();

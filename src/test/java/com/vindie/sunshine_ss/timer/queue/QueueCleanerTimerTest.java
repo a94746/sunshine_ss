@@ -7,7 +7,6 @@ import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
-import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,12 +24,12 @@ class QueueCleanerTimerTest extends WithDbData {
 
     @Test
     void queue_cleaner_timer_test() {
-        Location location = locationRepo.save(DataUtils.newTypicalLocation());
-        Account acc1 = accountRepo.save(DataUtils.newTypicalAccount(location));
-        Account acc2 = accountRepo.save(DataUtils.newTypicalAccount(location));
-        EventLine eventLine1 = DataUtils
+        Location location = locationRepo.save(dataUtils.newTypicalLocation());
+        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(location));
+        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(location));
+        EventLine eventLine1 = dataUtils
                 .newTypicalEventLine(acc1.getId(), null, false, true);
-        EventLine eventLine2 = DataUtils
+        EventLine eventLine2 = dataUtils
                 .newTypicalEventLine(acc2.getId(), null, false, true);
         eventLineRepo.saveAll(List.of(eventLine1, eventLine2));
         queueParserTimer.timer();

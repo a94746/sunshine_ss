@@ -7,7 +7,6 @@ import com.vindie.sunshine_ss.common.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
-import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +21,7 @@ class QueueParserTimerTest extends WithDbData {
 
     @Test
     void parse_event_line_for_one_test() {
-        EventLine eventLine = DataUtils
+        EventLine eventLine = dataUtils
                 .newTypicalEventLine(account.getId(), null, true, false);
         eventLineRepo.save(eventLine);
         assertEquals(1, eventLineRepo.findAll().size());
@@ -40,7 +39,7 @@ class QueueParserTimerTest extends WithDbData {
 
     @Test
     void parse_event_line_for_location_without_notif_test() {
-        EventLine eventLine = DataUtils
+        EventLine eventLine = dataUtils
                 .newTypicalEventLine(null, account.getLocation().getId(), false, true);
         eventLineRepo.save(eventLine);
         assertEquals(1, eventLineRepo.findAll().size());
@@ -67,7 +66,7 @@ class QueueParserTimerTest extends WithDbData {
 
     @Test
     void parse_event_line_for_location_with_notif_test() {
-        EventLine eventLine = DataUtils
+        EventLine eventLine = dataUtils
                 .newTypicalEventLine(null, account.getLocation().getId(), true, false);
         eventLineRepo.save(eventLine);
         assertEquals(1, eventLineRepo.findAll().size());
@@ -85,28 +84,28 @@ class QueueParserTimerTest extends WithDbData {
 
     @Test
     void parse_event_line_error_cases() {
-        eventLineRepo.save(DataUtils
+        eventLineRepo.save(dataUtils
                 .newTypicalEventLine(account.getId(), account.getLocation().getId(), true, false));
         assertEquals(1, eventLineRepo.findAll().size());
         queueParserTimer.timer();
         assertEquals(0, eventLineRepo.findAll().size());
         assertEquals(0, queueElementRepo.findAll().size());
 
-        eventLineRepo.save(DataUtils
+        eventLineRepo.save(dataUtils
                 .newTypicalEventLine(null, null, true, false));
         assertEquals(1, eventLineRepo.findAll().size());
         queueParserTimer.timer();
         assertEquals(0, eventLineRepo.findAll().size());
         assertEquals(0, queueElementRepo.findAll().size());
 
-        eventLineRepo.save(DataUtils
+        eventLineRepo.save(dataUtils
                 .newTypicalEventLine(account.getId(), null, true, true));
         assertEquals(1, eventLineRepo.findAll().size());
         queueParserTimer.timer();
         assertEquals(0, eventLineRepo.findAll().size());
         assertEquals(0, queueElementRepo.findAll().size());
 
-        eventLineRepo.save(DataUtils
+        eventLineRepo.save(dataUtils
                 .newTypicalEventLine(null, account.getLocation().getId(), false, false));
         assertEquals(1, eventLineRepo.findAll().size());
         queueParserTimer.timer();
