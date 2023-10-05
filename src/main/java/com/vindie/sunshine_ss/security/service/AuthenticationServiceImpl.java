@@ -43,6 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .bday(request.bday)
                 .lang(request.lang)
                 .location(locationRepo.findByName(request.locationName).orElseThrow())
+                .locationLastChange(LocalDateTime.now())
                 .deleted(false)
                 .likes(0)
                 .views(0)
@@ -81,18 +82,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public JwtAuthenticationResponse signin(SigninRequest request) {
         User user = null;
-        if (hasLength(request.uniqueId)) {
-            user = deviceRepo.findUserByUniqueId(request.uniqueId)
-                    .orElseThrow(() -> new UsernameNotFoundException("Invalid uniqueId"));
-            if (user == null)
-                throw new UsernameNotFoundException("user == null");
-        } else {
+
+        if (hasLength(request.pass)) {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email, request.pass));
             user = accountRepo.findUserByEmail(request.email)
                     .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
+            deviceRepo.refreshOwner(request.uniqueId, accountRepo.getReferenceById(user.getId()));
+
+        } else {
+            user = deviceRepo.findUserByUniqueId(request.uniqueId)
+                    .orElseThrow(() -> new UsernameNotFoundException("Invalid uniqueId"));
+            if (user == null)
+                throw new UsernameNotFoundException("user == null");
         }
 
         var jwt = jwtService.generateToken(user);

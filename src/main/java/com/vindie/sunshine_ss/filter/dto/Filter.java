@@ -2,7 +2,6 @@ package com.vindie.sunshine_ss.filter.dto;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
-import com.vindie.sunshine_ss.common.dto.Gender;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,7 +34,7 @@ public class Filter {
     @OneToMany(mappedBy = "filter", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<RelationWithGenders> relationsWithGenders;
 
-    @ElementCollection(targetClass = Gender.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = ChatPref.class, fetch = FetchType.EAGER)
     @JoinTable(name = "filters_to_chat_prefs", joinColumns = @JoinColumn(name = "filter_id"))
     @Column(name = "chat_prefs", nullable = false)
     @Enumerated(EnumType.ORDINAL)

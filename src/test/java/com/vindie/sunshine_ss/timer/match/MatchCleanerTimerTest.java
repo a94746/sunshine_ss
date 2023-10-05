@@ -19,8 +19,8 @@ class MatchCleanerTimerTest extends WithDbData {
 
     @Test
     void match_cleaner_timer_test() {
-        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
-        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
+        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
+        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
         Match match1 = dataUtils.newTypicalMatch(acc1, acc2);
         Match match2 = dataUtils.newTypicalMatch(acc2, acc1);
         matchRepo.saveAll(List.of(match1, match2));

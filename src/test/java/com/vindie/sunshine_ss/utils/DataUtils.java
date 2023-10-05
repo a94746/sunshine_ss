@@ -39,10 +39,10 @@ public class DataUtils {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Account newTypicalAccount(Location location) {
-        return newTypicalAccount(RANDOM.nextInt(5), RANDOM.nextInt(7), RANDOM.nextInt(1) + 1, location);
+    public Account newTypicalAccount(Location location, boolean filterNeeded) {
+        return newTypicalAccount(RANDOM.nextInt(5), RANDOM.nextInt(7), RANDOM.nextInt(1) + 1, location, filterNeeded);
     }
-    public Account newTypicalAccount(int picsNum, int contactsNum, int devicesNum, Location location) {
+    public Account newTypicalAccount(int picsNum, int contactsNum, int devicesNum, Location location, boolean filterNeeded) {
         Account acc = AccountService.createCorrect();
         acc.setName(FAKER.name().firstName());
         acc.setBday(LocalDate.now()
@@ -66,10 +66,16 @@ public class DataUtils {
         acc.setPremMatchesNum(prem
                 ? gender.getPremMatchesNum()
                 : null);
+        acc.setPremTill(prem
+                ? LocalDateTime.now().plusHours(1)
+                : null);
         acc.setLastPresence(LocalDateTime.now());
         acc.setLocation(location);
+        acc.setLocationLastChange(LocalDateTime.now().minusHours(RANDOM.nextInt(48)));
 
-        Filter filter = newTypicalFilter(acc);
+        Filter filter = filterNeeded || getRandomElement(List.of(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE))
+                ? newTypicalFilter(acc)
+                : null;
         acc.setFilter(filter);
         acc.setCread(newTypicalCread(acc));
 
@@ -126,7 +132,6 @@ public class DataUtils {
     private Pic newTypicalPic(Account owner) {
         Pic pic = new Pic();
         pic.setFile(FAKER.file().fileName().getBytes(StandardCharsets.UTF_8));
-        pic.setNum((byte) FAKER.number().randomDigit());
         pic.setOwner(owner);
         return pic;
     }

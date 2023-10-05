@@ -39,7 +39,9 @@ class SchServiceTest extends SunshineSsApplicationTests {
         List<Account> accs = new ArrayList<>();
         Map<Account, Collection<Long>> accs2avoidMatches = new HashMap<>();
         for (long i = 0; i < ACCOUNT_NUM; i++) {
-            var acc = dataUtils.newTypicalAccount(new Location());
+            var acc = dataUtils.newTypicalAccount(new Location(), false);
+            if (acc.getFilter() == null)
+                continue;
             acc.setId(i);
             accs2avoidMatches.put(acc, new HashSet<>());
             accs.add(acc);

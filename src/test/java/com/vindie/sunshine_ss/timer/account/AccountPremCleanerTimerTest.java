@@ -17,7 +17,7 @@ class AccountPremCleanerTimerTest extends WithDbData {
     @Test
     void account_cleaner_timer_test() {
         final byte premMatchesNum = 10;
-        Account acc2 = dataUtils.newTypicalAccount(account.getLocation());
+        Account acc2 = dataUtils.newTypicalAccount(account.getLocation(), false);
         acc2.setPremMatchesNum(premMatchesNum);
         acc2.setPremTill(LocalDateTime.now().minusHours(1));
         accountRepo.save(acc2);

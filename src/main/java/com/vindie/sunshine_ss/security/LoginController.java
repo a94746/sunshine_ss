@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.util.StringUtils.hasLength;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -27,6 +29,8 @@ public class LoginController {
 
     @PostMapping("/signin")
     public JwtAuthenticationResponse signin(@RequestBody SigninRequest request) {
+        if (!hasLength(request.uniqueId))
+            throw new IllegalArgumentException("uniqueId can't be empty");
         return authenticationService.signin(request);
     }
 

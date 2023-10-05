@@ -58,7 +58,7 @@ class AuthControllerTest extends WithMvc {
     @Test
     void signup_the_same_email() throws Exception {
         var beforeAccs = accountRepo.findAll();
-        var newAcc = dataUtils.newTypicalAccount(account.getLocation());
+        var newAcc = dataUtils.newTypicalAccount(account.getLocation(), false);
         var request = SignUpRequest.builder()
                 .email(account.getCread().getEmail())
                 .name(newAcc.getName())
@@ -82,7 +82,7 @@ class AuthControllerTest extends WithMvc {
 
     @Test
     void signup_new() throws Exception {
-        var newAcc = dataUtils.newTypicalAccount(account.getLocation());
+        var newAcc = dataUtils.newTypicalAccount(account.getLocation(), false);
 
         String email = newAcc.getCread().getEmail();
         mvc.perform(get("/before_auth/send_email_code")
@@ -117,7 +117,7 @@ class AuthControllerTest extends WithMvc {
     @Test
     @Transactional
     void signup_new_on_existing_device() throws Exception {
-        var newAcc = dataUtils.newTypicalAccount(account.getLocation());
+        var newAcc = dataUtils.newTypicalAccount(account.getLocation(), false);
 
         String email = newAcc.getCread().getEmail();
         mvc.perform(get("/before_auth/send_email_code")
@@ -189,6 +189,7 @@ class AuthControllerTest extends WithMvc {
         var request2 = SigninRequest.builder()
                 .email(email)
                 .pass(newPass)
+                .uniqueId(account.getDevices().get(0).getUniqueId())
                 .build();
         mvc.perform(post("/auth/signin")
                         .header(MY_HEADER_NAME, myHeaderCode)
@@ -216,6 +217,29 @@ class AuthControllerTest extends WithMvc {
                         .content(MAPPER.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void login_another_acc_the_same_device() throws Exception {
+        var accountDevicesBefore = deviceRepo.findAllByOwnerId(account.getId());
+
+        var newAcc = dataUtils.newTypicalAccount(account.getLocation(), false);
+        accountRepo.save(newAcc);
+        var devicesBefore = deviceRepo.findAll();
+        var oldDevice = account.getDevices().get(0);
+        var request = SigninRequest.builder()
+                .email(newAcc.getCread().getEmail())
+                .pass(PASS)
+                .uniqueId(oldDevice.getUniqueId())
+                .build();
+        mvc.perform(post("/auth/signin")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .content(MAPPER.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertEquals(accountDevicesBefore.size() - 1, deviceRepo.findAllByOwnerId(account.getId()).size());
+        assertEquals(newAcc.getId(), deviceRepo.findById(oldDevice.getId()).get().getOwner().getId());
+        assertEquals(devicesBefore.size(), deviceRepo.findAll().size());
     }
 
 }

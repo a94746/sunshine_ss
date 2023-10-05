@@ -5,10 +5,15 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pics")
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Pic {
 
     @Id
@@ -25,8 +30,8 @@ public class Pic {
     @Column(name = "file")
     private byte[] file;
 
-    @Column(name = "num", nullable = false)
-    private Byte num;
-
+    @LastModifiedDate
+    @Column(name = "last_modified", nullable = false)
+    private LocalDateTime lastModified;
 
 }

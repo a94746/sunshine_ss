@@ -25,8 +25,8 @@ class QueueCleanerTimerTest extends WithDbData {
     @Test
     void queue_cleaner_timer_test() {
         Location location = locationRepo.save(dataUtils.newTypicalLocation());
-        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(location));
-        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(location));
+        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(location, false));
+        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(location, false));
         EventLine eventLine1 = dataUtils
                 .newTypicalEventLine(acc1.getId(), null, false, true);
         EventLine eventLine2 = dataUtils

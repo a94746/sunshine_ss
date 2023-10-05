@@ -21,7 +21,7 @@ class AccountCleanerTimerTest extends WithDbData {
 
     @Test
     void account_cleaner_timer_test() {
-        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
+        Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
         EventLine eventLine = dataUtils
                 .newTypicalEventLine(account.getId(), null, true, false);

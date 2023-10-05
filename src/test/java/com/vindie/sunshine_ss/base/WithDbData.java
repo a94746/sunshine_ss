@@ -13,7 +13,7 @@ import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.match.Match;
 import com.vindie.sunshine_ss.match.MatchRepo;
-import com.vindie.sunshine_ss.pic.PicRepo;
+import com.vindie.sunshine_ss.pic.PicService;
 import com.vindie.sunshine_ss.queue.repo.EventLineRepo;
 import com.vindie.sunshine_ss.queue.repo.QueueElementRepo;
 import com.vindie.sunshine_ss.utils.DataUtils;
@@ -25,7 +25,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import static com.vindie.sunshine_ss.utils.DataUtils.getRandomElement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public abstract class WithDbData extends WithDbContener {
     public static final String PASS = "12345678";
@@ -40,7 +42,7 @@ public abstract class WithDbData extends WithDbContener {
     @Autowired
     protected FilterRepo filterRepo;
     @Autowired
-    protected PicRepo picRepo;
+    protected PicService picService;
     @Autowired
     protected ContactRepo contactRepo;
     @Autowired
@@ -61,8 +63,8 @@ public abstract class WithDbData extends WithDbContener {
     @BeforeEach
     public void createData() {
         final int locationsNum = 2;
-        final int accountsNum = 63;
-        final int matchPairsNum = 6;
+        final int accountsNum = 83;
+        final int matchPairsNum = 10;
 
         List<Location> locations = new ArrayList<>();
         for (int i = 0; i < locationsNum; i++) {
@@ -72,13 +74,15 @@ public abstract class WithDbData extends WithDbContener {
         assertEquals(locationsNum, locationRepo.findAll().size());
 
         List<Account> accounts = new ArrayList<>();
-        for (int i = 0; i < accountsNum; i++) {
-            Location location = DataUtils.getRandomElement(locations);
-            accounts.add(dataUtils.newTypicalAccount(location));
+        var theFirstAcc = dataUtils.newTypicalAccount(getRandomElement(locations), true);
+        accounts.add(theFirstAcc);
+        for (int i = 0; i < accountsNum - 1; i++) {
+            Location location = getRandomElement(locations);
+            accounts.add(dataUtils.newTypicalAccount(location, false));
         }
         accountRepo.saveAll(accounts);
         assertEquals(accountsNum, accountRepo.findAll().size());
-        assertEquals(accountsNum, filterRepo.findAll().size());
+        assertEquals(accounts.stream().filter(a -> a.getFilter() != null).count(), filterRepo.findAll().size());
         assertEquals(accountsNum, creadRepo.findAll().size());
         assertEquals(accounts.stream()
                 .map(Account::getContacts)
@@ -91,13 +95,15 @@ public abstract class WithDbData extends WithDbContener {
         assertEquals(accounts.stream()
                 .map(Account::getPics)
                 .flatMap(Collection::stream)
-                .count(), picRepo.findAll().size());
+                .count(), picService.findAll().size());
         assertEquals(accounts.stream()
+                .filter(a -> a.getFilter() != null)
                 .map(Account::getFilter)
                 .map(Filter::getRelationsWithGenders)
                 .flatMap(Collection::stream)
                 .count(), relationWithGendersRepo.findAll().size());
         assertEquals(accounts.stream()
+                .filter(a -> a.getFilter() != null)
                 .map(Account::getFilter)
                 .map(Filter::getRelationsWithGenders)
                 .flatMap(Collection::stream)
@@ -110,15 +116,30 @@ public abstract class WithDbData extends WithDbContener {
                         .count());
 
         List<Match> matches = new ArrayList<>();
-        for (int i = 0; i < matchPairsNum; i++) {
-            matches.add(dataUtils.newTypicalMatch(accounts.get(i), accounts.get(i+1)));
-            matches.add(dataUtils.newTypicalMatch(accounts.get(i+1), accounts.get(i)));
+        matches.add(dataUtils.newTypicalMatch(accounts.get(0), accounts.get(1)));
+        matches.add(dataUtils.newTypicalMatch(accounts.get(1), accounts.get(0)));
+        for (int i = 1; i < matchPairsNum; i++) {
+            var acc1 = accounts.get(i);
+            if (acc1.getFilter() == null)
+                continue;
+            var var2 = RANDOM.nextInt(4);
+            for (int i2 = 0; i2 < var2; i2++) {
+                var acc2 = getRandomElement(accounts);
+                if (acc1.equals(acc2))
+                    continue;
+                if (acc2.getFilter() == null )
+                    continue;
+                if (matches.stream().anyMatch(m -> m.getOwner().equals(acc1) && m.getPartner().equals(acc2)))
+                    continue;
+                matches.add(dataUtils.newTypicalMatch(acc1, acc2));
+                matches.add(dataUtils.newTypicalMatch(acc2, acc1));
+            }
         }
         matchRepo.saveAll(matches);
-        assertEquals(matchPairsNum * 2, matchRepo.findAll().size());
+        assertNotEquals(0, matchRepo.findAll().size());
         assertEquals(accountsNum, accountRepo.findAll().size());
-        account = accountRepo.findAllWithCreadAndDevices()
-                .stream()
+        account = accountRepo.findWithCreadAndDevices().stream()
+                .filter(a -> a.getName().equals(theFirstAcc.getName()) && a.getCread().getEmail().equals(theFirstAcc.getCread().getEmail()))
                 .findFirst()
                 .orElseThrow();
     }

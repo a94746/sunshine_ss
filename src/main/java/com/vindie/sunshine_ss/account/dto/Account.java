@@ -59,6 +59,9 @@ public class Account {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @Column(name = "location_last_change", nullable = false)
+    private LocalDateTime locationLastChange;
+
     @Column(name = "deleted", nullable = false)
     private Boolean deleted;
 

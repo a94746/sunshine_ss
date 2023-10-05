@@ -1,5 +1,6 @@
 package com.vindie.sunshine_ss.account.repo;
 
+import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.dto.Device;
 import com.vindie.sunshine_ss.security.record.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,4 +32,17 @@ public interface DeviceRepo extends JpaRepository<Device, Long> {
             "d.owner = NULL " +
             "WHERE d.owner.id = :ownerId")
     void logoutDevicesByOwnerId(Long ownerId);
+
+    @Modifying
+    @Query("UPDATE Device d " +
+            "SET d.appVersion = :appVersion " +
+            "WHERE d.uniqueId = :uniqueId")
+    void takeInfo(String uniqueId, String appVersion);
+
+    @Modifying
+    @Query("UPDATE Device d " +
+            "SET d.logoutOwnerId = NULL, " +
+            "d.owner = :account " +
+            "WHERE d.uniqueId = :uniqueId")
+    void refreshOwner(String uniqueId, Account account);
 }

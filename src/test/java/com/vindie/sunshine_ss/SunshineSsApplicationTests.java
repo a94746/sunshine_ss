@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
 import com.vindie.sunshine_ss.common.email.EmailSenderService;
 import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.service.PropService;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;
 import com.vindie.sunshine_ss.utils.EventUtils;
 import org.awaitility.core.ConditionFactory;
@@ -36,6 +37,8 @@ public abstract class SunshineSsApplicationTests {
     private DatabaseCleaner databaseCleaner;
     @Autowired
     private EventUtils eventUtils;
+    @Autowired
+    protected PropService propService;
     @MockBean
     private EmailSenderService emailSenderService;
 

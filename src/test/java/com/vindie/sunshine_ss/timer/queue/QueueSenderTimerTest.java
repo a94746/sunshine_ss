@@ -34,7 +34,7 @@ class QueueSenderTimerTest extends WithDbData {
 
     @Test
     void queue_sender_timer_test() {
-        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation()));
+        Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
         EventLine eventLine = dataUtils
                 .newTypicalEventLine(null, acc1.getLocation().getId(), true, false);
         eventLineRepo.save(eventLine);

@@ -3,6 +3,7 @@ package com.vindie.sunshine_ss.common.email;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.vindie.sunshine_ss.common.service.PropService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 public class EmailService {
     private final Pattern emailPattern = Pattern.compile("^(.{1,64})@(.{1,64})\\.(.{1,32})");
     private final Random random = new Random();
+    private final PropService propService;
 
     private final CacheLoader<String, Integer> loader = new CacheLoader<>() {
         @Override
@@ -33,7 +35,9 @@ public class EmailService {
     private EmailSenderService emailSenderService;
 
     public void sendEmailCode(String email) {
-        int code = random.nextInt(0, 900000) + 100000;
+        int code = propService.devNow
+                ? 123456
+                : random.nextInt(0, 900000) + 100000;
 //        emailSenderService.sendEmail(email.trim(),
 //                "Sunshine confirmation code", "Code: " + code);
 //        TODO: add email

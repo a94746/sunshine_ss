@@ -51,14 +51,8 @@ public class SchParser {
 
     private static Map<Gender, Set<Relation>> parseGenders2relations(Collection<RelationWithGenders> input) {
         Map<Gender, Set<Relation>> result = new EnumMap<>(Gender.class);
-        input.stream()
-                .map(r2g -> r2g.getGenders()
-                        .stream()
-                        .map(g -> Pair.of(g, r2g.getRelation()))
-                        .toList())
-                .flatMap(Collection::stream)
-                .forEach(pair ->
-                        result.computeIfAbsent(pair.getFirst(), ignore -> new HashSet<>()).add(pair.getSecond()));
+        input.forEach(r2g -> r2g.getGenders()
+                        .forEach(g -> result.computeIfAbsent(g, ignore -> new HashSet<>()).add(r2g.getRelation())));
         return result;
     }
 }

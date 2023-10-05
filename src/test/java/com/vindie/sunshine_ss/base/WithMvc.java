@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 public class WithMvc extends WithDbData {
-    @Value("${app.my-header-code}")
+    @Value("${flow.my-header-code}")
     protected String myHeaderCode;
     @Autowired
     protected MockMvc mvc;
@@ -33,6 +33,7 @@ public class WithMvc extends WithDbData {
         var request = SigninRequest.builder()
                 .email(account.getCread().getEmail())
                 .pass(PASS)
+                .uniqueId(account.getDevices().get(0).getUniqueId())
                 .build();
         var response = mvc.perform(post("/auth/signin")
                         .header(MY_HEADER_NAME, myHeaderCode)

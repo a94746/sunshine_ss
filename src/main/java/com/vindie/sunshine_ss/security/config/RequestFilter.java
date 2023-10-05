@@ -17,12 +17,11 @@ import static io.micrometer.common.util.StringUtils.isEmpty;
 @Order(1)
 public class RequestFilter implements Filter {
     public static final String MY_HEADER_NAME = "Sunshine-secret";
-    @Value("${app.my-header-code}")
     private String myHeaderCode;
 
-    public RequestFilter(@Value("${app.my-header-code}") String myHeaderCode) {
+    public RequestFilter(@Value("${flow.my-header-code}") String myHeaderCode) {
         if (isEmpty(myHeaderCode))
-            throw new IllegalArgumentException("app.my-header-code is empty");
+            throw new IllegalArgumentException("flow.my-header-code is empty");
         this.myHeaderCode = myHeaderCode;
     }
 

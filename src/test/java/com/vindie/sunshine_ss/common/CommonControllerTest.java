@@ -2,26 +2,24 @@ package com.vindie.sunshine_ss.common;
 
 import com.vindie.sunshine_ss.base.WithMvc;
 import com.vindie.sunshine_ss.common.email.EmailService;
+import com.vindie.sunshine_ss.common.record.UiSettings;
 import com.vindie.sunshine_ss.common.service.VersionUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
 import static com.vindie.sunshine_ss.security.config.RequestFilter.MY_HEADER_NAME;
 import static com.vindie.sunshine_ss.utils.DataUtils.getRandomElement;
 import static com.vindie.sunshine_ss.utils.DataUtils.index;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CommonControllerTest extends WithMvc {
-    @Value("${least-version.android}")
-    private String androidLeastVersion;
-    @Value("${least-version.ios}")
-    String iosLeastVersion;
     @Autowired
     private VersionUtils versionUtils;
     @Autowired
@@ -119,7 +117,18 @@ class CommonControllerTest extends WithMvc {
                 .andExpect(content().string("false"));
     }
 
+    @Test
+    void get_settings_test() throws Exception {
+        mvc.perform(get("/settings")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(UiSettings.class, s -> {
+                    assertEquals(propService.uiPicCacheTTL, s.getPicCacheTTL());
+                }));
+    }
+
     private String getRandomVersionOs() {
-        return getRandomElement(List.of(androidLeastVersion, iosLeastVersion));
+        return getRandomElement(List.of(propService.androidLeastVersion, propService.iosLeastVersion));
     }
 }
