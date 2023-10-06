@@ -4,9 +4,9 @@ import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.service.AccountService;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
+import com.vindie.sunshine_ss.common.record.Triple;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
 import com.vindie.sunshine_ss.scheduling.dto.SchAccount;
-import org.springframework.data.util.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,11 +19,11 @@ import static com.vindie.sunshine_ss.scheduling.rules.Flow.LAST_PRESENCE_LIMIT_H
 public class SchParser {
     private SchParser() {}
 
-    public static Collection<Pair<Long, Long>> parseFrom(Map<Long, Set<Long>> input) {
+    public static Collection<Triple<Long, Long, String>> parseFrom(Map<Long, Map<Long, String>> input) {
         return input.entrySet()
                 .stream()
-                .map(e -> e.getValue().stream()
-                            .map(id -> Pair.of(e.getKey(), id))
+                .map(e -> e.getValue().entrySet().stream()
+                            .map(e2 -> Triple.of(e.getKey(), e2.getKey(), e2.getValue()))
                             .toList())
                 .flatMap(Collection::stream)
                 .toList();

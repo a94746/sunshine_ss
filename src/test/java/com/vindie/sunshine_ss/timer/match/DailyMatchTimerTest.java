@@ -1,8 +1,8 @@
 package com.vindie.sunshine_ss.timer.match;
 
 import com.vindie.sunshine_ss.base.WithDbData;
-import com.vindie.sunshine_ss.common.event.ss.DailyMatchesSsEvent;
-import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.DailyMatchesSsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.timers.match.DailyMatchTimer;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.match.MatchRepo;

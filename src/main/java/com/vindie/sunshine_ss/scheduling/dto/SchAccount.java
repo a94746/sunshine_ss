@@ -29,7 +29,7 @@ public class SchAccount {
     private final byte ageTo;
 
     @EqualsAndHashCode.Exclude
-    private final Set<SchAccount> resultMatches = new HashSet<>();
+    private final Map<Long, String> resultMatches = new HashMap<>();
 
     public SchAccount(long id,
                       int lastPresenceHours,

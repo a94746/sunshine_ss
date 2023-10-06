@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,18 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
             "SET a.deleted = true " +
             "WHERE a.id = :id")
     void fakeDelete(Long id);
+
+    @Modifying
+    @Query("UPDATE Account a " +
+            "SET a.views = a.views + 1 " +
+            "WHERE a.id IN (:ids)")
+    void incrementViews(Collection<Long> ids);
+
+    @Modifying
+    @Query("UPDATE Account a " +
+            "SET a.likes = a.likes + 1 " +
+            "WHERE a.id IN (:ids)")
+    void incrementLikes(Collection<Long> ids);
 
     @Query("SELECT a FROM Account a " +
             "LEFT JOIN a.matchesOwner " +

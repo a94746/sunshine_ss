@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
 import com.vindie.sunshine_ss.common.email.EmailSenderService;
-import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.service.PropService;
+import com.vindie.sunshine_ss.push_and_socket.kinda_socket.KindaSocketService;
+import com.vindie.sunshine_ss.push_and_socket.push.PushService;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;
 import com.vindie.sunshine_ss.utils.EventUtils;
 import org.awaitility.core.ConditionFactory;
@@ -41,6 +43,10 @@ public abstract class SunshineSsApplicationTests {
     protected PropService propService;
     @MockBean
     private EmailSenderService emailSenderService;
+    @MockBean
+    private KindaSocketService kindaSocketService;
+    @MockBean
+    private PushService pushService;
 
     protected ConditionFactory checkEverySec() {
         return checkEverySec(10);

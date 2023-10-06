@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.utils;
 
-import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

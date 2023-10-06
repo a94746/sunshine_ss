@@ -1,9 +1,13 @@
 package com.vindie.sunshine_ss.common;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vindie.sunshine_ss.base.WithMvc;
 import com.vindie.sunshine_ss.common.email.EmailService;
+import com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog;
 import com.vindie.sunshine_ss.common.record.UiSettings;
 import com.vindie.sunshine_ss.common.service.VersionUtils;
+import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
+import com.vindie.sunshine_ss.queue.dto.EventLine;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,8 +17,7 @@ import java.util.List;
 import static com.vindie.sunshine_ss.security.config.RequestFilter.MY_HEADER_NAME;
 import static com.vindie.sunshine_ss.utils.DataUtils.getRandomElement;
 import static com.vindie.sunshine_ss.utils.DataUtils.index;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,6 +27,8 @@ class CommonControllerTest extends WithMvc {
     private VersionUtils versionUtils;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    QueueParserTimer queueParserTimer;
 
     @Test
     void check_unique_email_positive() throws Exception {
@@ -125,6 +130,36 @@ class CommonControllerTest extends WithMvc {
                 .andExpect(status().isOk())
                 .andExpect(modelMatches(UiSettings.class, s -> {
                     assertEquals(propService.uiPicCacheTTL, s.getPicCacheTTL());
+                }));
+    }
+
+    @Test
+    void get_login_window_notifs() throws Exception {
+        EventLine eventLine = dataUtils
+                .newTypicalEventLine(account.getId(), null, false, true);
+        EventLine eventLine2 = dataUtils
+                .newTypicalEventLine(account.getId(), null, false, true);
+        eventLineRepo.saveAll(List.of(eventLine, eventLine2));
+        queueParserTimer.timer();
+        assertEquals(2, eventLineRepo.findAll().size());
+
+        mvc.perform(get("/login_opening_dialogs")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(new TypeReference<List<UiLoginOpeningDialog>>() {}, l -> {
+                    assertEquals(2, l.size());
+                    assertNotEquals(l.get(0).getText(), l.get(1).getText());
+                }));
+        assertEquals(2, eventLineRepo.findAll().size());
+        assertEquals(0, queueElementRepo.findAll().size());
+
+        mvc.perform(get("/login_opening_dialogs")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(new TypeReference<List<UiLoginOpeningDialog>>() {}, l -> {
+                    assertEquals(0, l.size());
                 }));
     }
 

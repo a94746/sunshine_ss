@@ -2,8 +2,8 @@ package com.vindie.sunshine_ss.timer.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.base.WithDbData;
-import com.vindie.sunshine_ss.common.event.ss.QueueElementsUpdateSsEvent;
-import com.vindie.sunshine_ss.common.event.ss.SsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.QueueNotifsSsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
@@ -20,9 +20,22 @@ class QueueParserTimerTest extends WithDbData {
     private QueueParserTimer queueParserTimer;
 
     @Test
-    void parse_event_line_for_one_test() {
+    void parse_event_line_for_one_notif_test() {
         EventLine eventLine = dataUtils
                 .newTypicalEventLine(account.getId(), null, true, false);
+        eventLineRepo.save(eventLine);
+        assertEquals(1, eventLineRepo.findAll().size());
+        queueParserTimer.timer();
+        assertEquals(0, eventLineRepo.findAll().size());
+        assertEquals(0, queueElementRepo.findAll().size());
+
+        checkEvent(List.of(account.getId()));
+    }
+
+    @Test
+    void parse_event_line_for_one_test() {
+        EventLine eventLine = dataUtils
+                .newTypicalEventLine(account.getId(), null, false, true);
         eventLineRepo.save(eventLine);
         assertEquals(1, eventLineRepo.findAll().size());
         queueParserTimer.timer();
@@ -33,8 +46,6 @@ class QueueParserTimerTest extends WithDbData {
         assertEquals(1, queueElements.size());
         assertEquals(eventLines.get(0).getId(), queueElements.get(0).getEventLine().getId());
         assertEquals(account.getId(), queueElements.get(0).getOwner().getId());
-
-        checkEvent(List.of(account.getId()));
     }
 
     @Test
@@ -71,8 +82,7 @@ class QueueParserTimerTest extends WithDbData {
         eventLineRepo.save(eventLine);
         assertEquals(1, eventLineRepo.findAll().size());
         queueParserTimer.timer();
-        List<EventLine> eventLines = eventLineRepo.findAll();
-        assertEquals(1, eventLines.size());
+        assertEquals(0, eventLineRepo.findAll().size());
         List<Long> peopleOnLocation = accountRepo.findAll()
                 .stream()
                 .filter(ac -> ac.getLocation().getId().equals(account.getLocation().getId()))
@@ -114,8 +124,8 @@ class QueueParserTimerTest extends WithDbData {
     }
 
     private void checkEvent(List<Long> ids) {
-        checkEverySec().until(() -> eventEquals(SsEvent.Type.QUEUE_ELEMENTS_UPDATE));
-        QueueElementsUpdateSsEvent event = (QueueElementsUpdateSsEvent) getEventAndClean();
-        assertEquals(ids, event.getIds());
+        checkEverySec().until(() -> eventEquals(SsEvent.Type.QUEUE_NOTIFS));
+        QueueNotifsSsEvent event = (QueueNotifsSsEvent) getEventAndClean();
+        assertEquals(ids, event.getNotifRecord().getIds());
     }
 }

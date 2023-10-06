@@ -1,5 +1,6 @@
 package com.vindie.sunshine_ss.queue.repo;
 
+import com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,12 +22,17 @@ public interface QueueElementRepo extends JpaRepository<QueueElement, Long> {
     @Modifying
     int deleteByIdIn(List<Long> ids);
 
+    @Query("SELECT new com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog(qe.eventLine.title, qe.eventLine.text) " +
+            "FROM QueueElement qe " +
+            "WHERE qe.eventLine.openingDialog = TRUE " +
+            "AND qe.owner.id = :ownerId")
+    List<UiLoginOpeningDialog> findOpeningDialogsByOwner(Long ownerId);
 
-    @Query("SELECT qe FROM QueueElement qe " +
-            "LEFT JOIN qe.eventLine " +
-            "LEFT JOIN qe.owner " +
-            "WHERE qe.eventLine.notification = true")
-    List<QueueElement> findAllNotifs();
+    @Modifying
+    @Query("DELETE FROM QueueElement qe " +
+            "WHERE qe.eventLine.openingDialog = TRUE " +
+            "AND qe.owner.id = :ownerId")
+    void deleteOpeningDialogsByOwner(Long ownerId);
 
     Optional<QueueElement> findFirstByEventLineId(Long eventId);
 }

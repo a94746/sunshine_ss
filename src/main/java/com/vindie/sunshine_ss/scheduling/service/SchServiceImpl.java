@@ -1,8 +1,9 @@
 package com.vindie.sunshine_ss.scheduling.service;
 
 import com.vindie.sunshine_ss.account.dto.Account;
+import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.service.AccountService;
-import com.vindie.sunshine_ss.common.event.ss.DailyMatchesSsEvent;
+import com.vindie.sunshine_ss.common.record.event.ss.DailyMatchesSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.match.Match;
@@ -32,6 +33,7 @@ public class SchServiceImpl implements SchService {
     private AccountService accountService;
     private MatchRepo matchRepo;
     private LocationRepo locationRepo;
+    private AccountRepo accountRepo;
     private ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -58,24 +60,26 @@ public class SchServiceImpl implements SchService {
             accs2avoidMatches.put(a, avoidMatches);
         });
         Collection<SchAccount> parseToResult = SchParser.parseTo(accs2avoidMatches);
-        Map<Long, Set<Long>> schResult = calculate(parseToResult);
+        Map<Long, Map<Long, String>> schResult = calculate(parseToResult);
         List<Match> mathes = SchParser.parseFrom(schResult)
                 .stream()
-                .map(pair -> {
+                .map(triple -> {
                     Match match = MatchService.createCorrect();
-                    match.setOwner(ids2accs.get(pair.getFirst()));
-                    match.setPartner(ids2accs.get(pair.getSecond()));
+                    match.setOwner(ids2accs.get(triple.getFirst()));
+                    match.setPartner(ids2accs.get(triple.getSecond()));
+                    match.setPairId(triple.getThird());
                     return match;
                 })
                 .toList();
         DailyMatchesSsEvent event = new DailyMatchesSsEvent(schResult.keySet());
         eventPublisher.publishEvent(event);
         matchRepo.saveAll(mathes);
+        accountRepo.incrementViews(schResult.keySet());
         log.info("End   runSch for: {} in {} sec", location.getName(), Duration.between(start, Instant.now()).getNano() * 0.000000001D);
     }
 
     @Override
-    public Map<Long, Set<Long>> calculate(Collection<SchAccount> accounts) {
+    public Map<Long, Map<Long, String>> calculate(Collection<SchAccount> accounts) {
         for (SchAccount theAccount : accounts) {
             for (SchAccount acc : accounts) {
                 if (Flow.FIRST.test(theAccount, acc)) {
@@ -85,15 +89,13 @@ public class SchServiceImpl implements SchService {
             }
         }
         return accounts.stream()
-                .collect(Collectors.toMap(SchAccount::getId,
-                        a -> a.getResultMatches().stream()
-                                .map(SchAccount::getId)
-                                .collect(Collectors.toSet())));
+                .collect(Collectors.toMap(SchAccount::getId, SchAccount::getResultMatches));
     }
 
     public void addMatchEachOther(SchAccount acc1, SchAccount acc2) {
-        acc1.getResultMatches().add(acc2);
-        acc2.getResultMatches().add(acc1);
+        String pairId = UUID.randomUUID().toString();
+        acc1.getResultMatches().put(acc2.getId(), pairId);
+        acc2.getResultMatches().put(acc1.getId(), pairId);
     }
 
     private boolean forDebugOnly(SchAccount theAccount, SchAccount  acc) {

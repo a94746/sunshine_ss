@@ -21,7 +21,7 @@ import static java.lang.Boolean.TRUE;
 public class QueueCleanerTimer {
 
     public static final int INTERVAL_HOURS = 5;
-    public static final int TTL_DAYS = 20;
+    public static final int TTL_DAYS = 10;
 
     private QueueElementRepo queueElementRepo;
     private EventLineRepo eventLineRepo;

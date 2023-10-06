@@ -2,6 +2,7 @@ package com.vindie.sunshine_ss.scheduling;
 
 import com.vindie.sunshine_ss.SunshineSsApplicationTests;
 import com.vindie.sunshine_ss.account.dto.Account;
+import com.vindie.sunshine_ss.common.record.Triple;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.scheduling.dto.SchAccount;
 import com.vindie.sunshine_ss.scheduling.service.SchParser;
@@ -63,28 +64,29 @@ class SchServiceTest extends SunshineSsApplicationTests {
                 });
         Instant start = Instant.now();
         Collection<SchAccount> parseToResult = SchParser.parseTo(accs2avoidMatches);
-        Map<Long, Set<Long>> schResult = schService.calculate(parseToResult);
-        Collection<Pair<Long, Long>> parseFromResult = SchParser.parseFrom(schResult);
+        Map<Long, Map<Long, String>> schResult = schService.calculate(parseToResult);
+        Collection<Triple<Long, Long, String>> parseFromResult = SchParser.parseFrom(schResult);
         Duration timeSch = Duration.between(start, Instant.now());
 
-        List<Pair<Account, List<Account>>> result = parseFromResult.stream()
-                .map(pair -> {
+        List<Pair<Account, List<Pair<Account, String>>>> result = parseFromResult.stream()
+                .map(triple -> {
                     var first = accs.stream()
-                            .filter(a -> a.getId().equals(pair.getFirst()))
+                            .filter(a -> a.getId().equals(triple.getFirst()))
                             .findFirst()
                             .get();
                     var second = accs.stream()
-                            .filter(a -> a.getId().equals(pair.getSecond()))
+                            .filter(a -> a.getId().equals(triple.getSecond()))
                             .findFirst()
                             .get();
-                    return Pair.of(first, second);
+                    var pairId = triple.getThird();
+                    return Triple.of(first, second, pairId);
                 })
-                .collect(groupingBy(pair -> pair.getFirst().getId()))
+                .collect(groupingBy(triple -> triple.getFirst().getId()))
                 .values().stream()
-                .map(pairs -> {
-                    var first = pairs.get(0).getFirst();
-                    var second = pairs.stream()
-                            .map(Pair::getSecond)
+                .map(triples -> {
+                    var first = triples.get(0).getFirst();
+                    var second = triples.stream()
+                            .map(triple -> Pair.of(triple.getSecond(), triple.getThird()))
                             .toList();
                     return Pair.of(first, second);
                 })

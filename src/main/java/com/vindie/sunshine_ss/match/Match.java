@@ -24,6 +24,9 @@ public class Match {
     @JoinColumn(name = "owner_id", nullable = false)
     private Account owner;
 
+    @Column(name = "pair_id", nullable = false, length = 36)
+    private String pairId;
+
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "partner_id", nullable = false)
@@ -32,9 +35,6 @@ public class Match {
     @CreatedDate
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
-
-    @Column(name = "viewed", nullable = false)
-    private Boolean viewed;
 
     @Column(name = "liked", nullable = false)
     private Boolean liked;

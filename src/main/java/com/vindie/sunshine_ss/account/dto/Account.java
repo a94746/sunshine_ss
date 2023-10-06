@@ -70,6 +70,9 @@ public class Account {
     @Column(name = "likes", nullable = false)
     private Integer likes;
 
+    /**
+     * it's total matches
+     */
     @Column(name = "views", nullable = false)
     private Integer views;
 

@@ -2,7 +2,8 @@ package com.vindie.sunshine_ss.common.timers.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
-import com.vindie.sunshine_ss.common.event.ss.QueueElementsUpdateSsEvent;
+import com.vindie.sunshine_ss.common.record.NotifRecord;
+import com.vindie.sunshine_ss.common.record.event.ss.QueueNotifsSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
@@ -66,7 +67,13 @@ public class QueueParserTimer {
         if (ev.getOwnerId() != null) {
             Optional<Account> optAccount = accountRepo.findByIdAndDeletedFalse(ev.getOwnerId());
             if (optAccount.isPresent()) {
-                save(ev, singletonList(optAccount.get()));
+                if (Boolean.TRUE.equals(ev.getNotification())) {
+                    send(ev, singletonList(optAccount.get()));
+                    eventLineRepo.delete(ev);
+                    return;
+                } else {
+                    save(ev, singletonList(optAccount.get()));
+                }
             } else {
                 eventLineRepo.delete(ev);
                 return;
@@ -76,7 +83,13 @@ public class QueueParserTimer {
             Optional<Location> optLocation = locationRepo.findById(ev.getLocationId());
             if (optLocation.isPresent()) {
                 List<Account> accs = accountRepo.findAllByLocationIdAndDeletedFalse(optLocation.get().getId());
-                save(ev, accs);
+                if (Boolean.TRUE.equals(ev.getNotification())) {
+                    send(ev, accs);
+                    eventLineRepo.delete(ev);
+                    return;
+                } else {
+                    save(ev, accs);
+                }
             } else {
                 eventLineRepo.delete(ev);
                 return;
@@ -87,9 +100,6 @@ public class QueueParserTimer {
     }
 
     private void save(EventLine eventLine, List<Account> accs) {
-        List<Long> accIds = accs.stream()
-                .map(Account::getId)
-                .toList();
         List<QueueElement> queueElements = accs.stream()
                 .map(acc -> {
                     QueueElement qe = new QueueElement();
@@ -99,10 +109,15 @@ public class QueueParserTimer {
                 })
                 .toList();
         queueElementRepo.saveAll(queueElements);
+    }
 
-        if (Boolean.TRUE.equals(eventLine.getNotification())) {
-            QueueElementsUpdateSsEvent event = new QueueElementsUpdateSsEvent(accIds);
-            eventPublisher.publishEvent(event);
-        }
+    private void send(EventLine eventLine, List<Account> accs) {
+        List<Long> accIds = accs.stream()
+                .map(Account::getId)
+                .toList();
+        var notifRecord = new NotifRecord(accIds, eventLine.getTitle(), eventLine.getText());
+
+        QueueNotifsSsEvent event = new QueueNotifsSsEvent(notifRecord);
+        eventPublisher.publishEvent(event);
     }
 }

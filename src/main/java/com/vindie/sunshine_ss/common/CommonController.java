@@ -2,6 +2,7 @@ package com.vindie.sunshine_ss.common;
 
 import com.vindie.sunshine_ss.account.repo.CreadRepo;
 import com.vindie.sunshine_ss.common.email.EmailService;
+import com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog;
 import com.vindie.sunshine_ss.common.record.UiSettings;
 import com.vindie.sunshine_ss.common.service.CommonService;
 import com.vindie.sunshine_ss.common.service.VersionUtils;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -37,6 +40,11 @@ public class CommonController {
     @GetMapping("/settings")
     public UiSettings getSettings() {
         return commonService.gerSettings();
+    }
+
+    @GetMapping("/login_opening_dialogs")
+    public List<UiLoginOpeningDialog> getLoginOpeningDialogs() {
+        return commonService.gerUiLoginOpeningDialogs(CurUserService.get());
     }
 
     @GetMapping("/before_auth/send_email_code")

@@ -9,6 +9,7 @@ public enum UiKey {
     NO_UNIQUE_EMAIL("<no_unique_email>"),
     NO_EXISTING_EMAIL("<no_existing_email>"),
     NOT_CORRECT_EMAIL_CODE("<not_correct_email_code>"),
+    MATCH_NOT_AT_ACTUAL("<match_not_at_actual>"),
     NOT_A_EMAIL("<not_a_email>");
 
     private final String key;

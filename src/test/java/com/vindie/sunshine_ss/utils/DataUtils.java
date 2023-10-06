@@ -162,11 +162,13 @@ public class DataUtils {
         return cread;
     }
 
-    public Match newTypicalMatch(Account owner, Account partner) {
+    public Match newTypicalMatch(Account owner, Account partner, String pairId) {
         Match match = MatchService.createCorrect();
+        match.setPairId(pairId);
         match.setOwner(owner);
         match.setPartner(partner);
         match.setMessage(FAKER.ancient().titan());
+        match.setLiked(RANDOM.nextInt(2) == 1);
         return match;
     }
 

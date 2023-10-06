@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,8 +22,9 @@ class MatchCleanerTimerTest extends WithDbData {
     void match_cleaner_timer_test() {
         Account acc1 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
         Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
-        Match match1 = dataUtils.newTypicalMatch(acc1, acc2);
-        Match match2 = dataUtils.newTypicalMatch(acc2, acc1);
+        String pairId = UUID.randomUUID().toString();
+        Match match1 = dataUtils.newTypicalMatch(acc1, acc2, pairId);
+        Match match2 = dataUtils.newTypicalMatch(acc2, acc1, pairId);
         matchRepo.saveAll(List.of(match1, match2));
         List<Match> matches = matchRepo.findAll()
                 .stream()

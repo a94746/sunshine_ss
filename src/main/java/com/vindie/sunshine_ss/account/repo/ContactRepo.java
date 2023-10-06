@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ContactRepo extends JpaRepository<Contact, Long> {
 
-    List<Contact> findAllByOwnerIdIn(List<Long> accountId);
+    List<Contact> findAllByOwnerId(Long accountId);
 }

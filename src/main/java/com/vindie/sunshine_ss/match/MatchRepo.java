@@ -30,6 +30,37 @@ public interface MatchRepo extends JpaRepository<Match, Long> {
     @Query("SELECT m FROM Match m " +
             "LEFT JOIN FETCH m.owner " +
             "LEFT JOIN FETCH m.partner " +
+            "WHERE pairId = :pairId ")
+    List<Match> getPair(String pairId);
+
+    @Query("SELECT m FROM Match m " +
+            "LEFT JOIN FETCH m.owner " +
+            "LEFT JOIN FETCH m.partner " +
+            "LEFT JOIN FETCH m.partner.filter " +
+            "LEFT JOIN FETCH m.partner.filter.relationsWithGenders " +
+            "WHERE m.owner.id = :ownerId " +
+            "AND m.date > :date " +
+            "AND m.liked = TRUE")
+    List<Match> findAllLikedByOwnerIdAndDateAfter(Long ownerId, LocalDateTime date);
+
+    @Query("SELECT m FROM Match m " +
+            "LEFT JOIN FETCH m.owner " +
+            "LEFT JOIN FETCH m.partner " +
+            "LEFT JOIN FETCH m.partner.filter " +
+            "LEFT JOIN FETCH m.partner.filter.relationsWithGenders " +
+            "WHERE m.partner.id = :partnerId " +
+            "AND m.date > :date " +
+            "AND m.liked = TRUE")
+    List<Match> findAllLikedByPartnerIdAndDateAfter(Long partnerId, LocalDateTime date);
+
+    @Query("SELECT m FROM Match m " +
+            "WHERE m.pairId = :pairId " +
+            "AND m.id != :thisId")
+    Match getAnother(String pairId, Long thisId);
+
+    @Query("SELECT m FROM Match m " +
+            "LEFT JOIN FETCH m.owner " +
+            "LEFT JOIN FETCH m.partner " +
             "WHERE m.owner.id IN (:ownerIds)")
     List<Match> findAllByOwnerIds(List<Long> ownerIds);
 }

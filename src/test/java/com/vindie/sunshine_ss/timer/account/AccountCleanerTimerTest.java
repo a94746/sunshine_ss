@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +23,7 @@ class AccountCleanerTimerTest extends WithDbData {
         Account acc2 = accountRepo.save(dataUtils.newTypicalAccount(account.getLocation(), false));
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
         EventLine eventLine = dataUtils
-                .newTypicalEventLine(account.getId(), null, true, false);
+                .newTypicalEventLine(account.getId(), null, false, true);
         eventLineRepo.save(eventLine);
         queueParserTimer.timer();
         assertEquals(1, eventLineRepo.findAll().size());
@@ -43,6 +42,7 @@ class AccountCleanerTimerTest extends WithDbData {
         assertTrue(matchRepo.findAllByOwnerId(account.getId()).isEmpty());
         assertTrue(deviceRepo.findAllByOwnerId(account.getId()).isEmpty());
         assertEquals(devicesBefore.size(), deviceRepo.findAllByLogoutOwnerId(account.getId()).size());
-        assertTrue(contactRepo.findAllByOwnerIdIn(List.of(account.getId())).isEmpty());
+        assertTrue(contactRepo.findAllByOwnerId(account.getId()).isEmpty());
+        assertTrue(picService.getPicInfosByOwnerId(account.getId()).isEmpty());
     }
 }

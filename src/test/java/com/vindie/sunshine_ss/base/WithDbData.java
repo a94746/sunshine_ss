@@ -20,10 +20,7 @@ import com.vindie.sunshine_ss.utils.DataUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static com.vindie.sunshine_ss.utils.DataUtils.getRandomElement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,8 +113,9 @@ public abstract class WithDbData extends WithDbContener {
                         .count());
 
         List<Match> matches = new ArrayList<>();
-        matches.add(dataUtils.newTypicalMatch(accounts.get(0), accounts.get(1)));
-        matches.add(dataUtils.newTypicalMatch(accounts.get(1), accounts.get(0)));
+        String pairId = UUID.randomUUID().toString();
+        matches.add(dataUtils.newTypicalMatch(accounts.get(0), accounts.get(1), pairId));
+        matches.add(dataUtils.newTypicalMatch(accounts.get(1), accounts.get(0), pairId));
         for (int i = 1; i < matchPairsNum; i++) {
             var acc1 = accounts.get(i);
             if (acc1.getFilter() == null)
@@ -131,8 +129,9 @@ public abstract class WithDbData extends WithDbContener {
                     continue;
                 if (matches.stream().anyMatch(m -> m.getOwner().equals(acc1) && m.getPartner().equals(acc2)))
                     continue;
-                matches.add(dataUtils.newTypicalMatch(acc1, acc2));
-                matches.add(dataUtils.newTypicalMatch(acc2, acc1));
+                String pairId2 = UUID.randomUUID().toString();
+                matches.add(dataUtils.newTypicalMatch(acc1, acc2, pairId2));
+                matches.add(dataUtils.newTypicalMatch(acc2, acc1, pairId2));
             }
         }
         matchRepo.saveAll(matches);
