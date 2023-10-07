@@ -19,14 +19,47 @@ import static com.vindie.sunshine_ss.account.service.AccountService.isPrem;
 import static com.vindie.sunshine_ss.security.config.RequestFilter.MY_HEADER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AccountControllerTest extends WithMvc {
 
     @Autowired
     EmailService emailService;
+
+    @Test
+    void edit_acc_test() throws Exception {
+        var accsBefore = accountRepo.findAll();
+        var json = mvc.perform(get("/account/get_my")
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
+                        .header(MY_HEADER_NAME, myHeaderCode))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        var acc = MAPPER.readValue(json, UiMyAccount.class);
+        var newName = "svfsdvs.sk23dv";
+        acc.setName(newName);
+
+        mvc.perform(put("/account/edit_my")
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .content(MAPPER.writeValueAsString(acc))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/account/get_my")
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .content(MAPPER.writeValueAsString(acc))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(UiMyAccount.class, a -> {
+                    assertEquals(newName, a.getName());
+                }));
+        assertEquals(accsBefore.size(), accountRepo.findAll().size());
+    }
+
     @Test
     void take_info_test() throws Exception {
         var appVersion = "vvsddvsdvsd";
@@ -67,7 +100,7 @@ class AccountControllerTest extends WithMvc {
                     assertEquals(Gender.values().length, a.getFilter().getRelationsWithGenders().get(Relation.ACQUAINTANCE).size());
                     assertEquals(account.getName(), a.getName());
                     assertEquals(account.getDescription(), a.getDescription());
-                    assertEquals(account.getLocation().getName(), a.getLocationName());
+                    assertEquals(account.getLocation().getId(), a.getLocationId());
                     assertEquals(isPrem(account), a.getPrem());
                     assertEquals(account.getGender(), a.getGender());
                     assertEquals(isPrem(account) ? account.getRating() : null, a.getRating());

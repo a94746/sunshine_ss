@@ -24,6 +24,10 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
             "WHERE a.lastPresence < :older")
     List<Long> findOlder(LocalDateTime older);
 
+    @Query("SELECT a.location.lastScheduling FROM Account a " +
+            "WHERE a.id = :accId")
+    LocalDateTime getLastScheduling(Long accId);
+
     @Modifying
     @Query("UPDATE Account a " +
             "SET a.premMatchesNum = NULL, " +
@@ -50,7 +54,7 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     void incrementLikes(Collection<Long> ids);
 
     @Query("SELECT a FROM Account a " +
-            "LEFT JOIN a.matchesOwner " +
+            "LEFT JOIN FETCH a.matchesOwner " +
             "LEFT JOIN a.matchesOwner.partner " +
             "LEFT JOIN a.filter " +
             "LEFT JOIN a.filter.relationsWithGenders " +

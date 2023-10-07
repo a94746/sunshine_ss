@@ -1,7 +1,9 @@
 package com.vindie.sunshine_ss.common;
 
 import com.vindie.sunshine_ss.account.repo.CreadRepo;
+import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.email.EmailService;
+import com.vindie.sunshine_ss.common.record.UiLocation;
 import com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog;
 import com.vindie.sunshine_ss.common.record.UiSettings;
 import com.vindie.sunshine_ss.common.service.CommonService;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -37,12 +40,12 @@ public class CommonController {
         return versionUtils.isRelevantVersion(version);
     }
 
-    @GetMapping("/settings")
+    @GetMapping("/common/settings")
     public UiSettings getSettings() {
         return commonService.gerSettings();
     }
 
-    @GetMapping("/login_opening_dialogs")
+    @GetMapping("/common/login_opening_dialogs")
     public List<UiLoginOpeningDialog> getLoginOpeningDialogs() {
         return commonService.gerUiLoginOpeningDialogs(CurUserService.get());
     }
@@ -58,12 +61,27 @@ public class CommonController {
         return emailService.isCorrectEmailCode(email, code);
     }
 
-    @GetMapping("/test")
+    @GetMapping("/common/locations")
+    public List<UiLocation> getLocations() {
+        return commonService.getLocations();
+    }
+
+    @GetMapping("/common/chat_prefs")
+    public List<ChatPref> getChatPref() {
+        return commonService.getChatPref();
+    }
+
+    @GetMapping("/common/last_scheduling")
+    public LocalDateTime getLastScheduling() {
+        return commonService.getLastScheduling(CurUserService.get());
+    }
+
+    @GetMapping("/common/test")
     public String test() {
         return "Hello sunshine! " + CurUserService.get().getName();
     }
 
-    @PostMapping("/logout_easy")
+    @PostMapping("/common/logout_easy")
     public void logout() {
         authenticationService.logout(CurUserService.get());
     }

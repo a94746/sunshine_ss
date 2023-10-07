@@ -93,7 +93,7 @@ class MatchControllerTest extends WithMvc {
         mvc.perform(post("/match/like")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode)
-                        .content(MAPPER.writeValueAsString(MAPPER.writeValueAsString(uiLike)))
+                        .content(MAPPER.writeValueAsString(uiLike))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -128,7 +128,7 @@ class MatchControllerTest extends WithMvc {
         mvc.perform(post("/match/like")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode)
-                        .content(MAPPER.writeValueAsString(MAPPER.writeValueAsString(uiLike)))
+                        .content(MAPPER.writeValueAsString(uiLike))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));

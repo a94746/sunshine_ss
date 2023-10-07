@@ -47,6 +47,9 @@ public class Account {
     @Column(name = "bday", nullable = false)
     private LocalDate bday;
 
+    @Column(name = "bday_last_change", nullable = false)
+    private LocalDate bdayLastChange;
+
     @CreatedDate
     @Column(name = "registration_date", nullable = false)
     private LocalDate registrationDate;

@@ -4,6 +4,7 @@ import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Set;
@@ -13,10 +14,12 @@ import java.util.Set;
 @Data
 public class RelationWithGenders {
 
+    @EqualsAndHashCode.Exclude
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "filter_id", nullable = false)
@@ -27,6 +30,7 @@ public class RelationWithGenders {
     @Column(name = "relation", nullable = false)
     private Relation relation;
 
+    @EqualsAndHashCode.Exclude
     @ElementCollection(targetClass = Gender.class, fetch = FetchType.EAGER)
     @JoinTable(name = "relation_with_genders_to_genders", joinColumns = @JoinColumn(name = "relation_with_genders_id"))
     @Column(name = "gender", nullable = false)

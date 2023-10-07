@@ -25,20 +25,20 @@ class AuthControllerTest extends WithMvc {
 
     @Test
     void get_to_security_space_without_my_token() throws Exception {
-        mvc.perform(get("/test")
+        mvc.perform(get("/common/test")
                 .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
                 .andExpect(status().isUnauthorized());
     }
     @Test
     void get_to_security_space_without_jwt_token() throws Exception {
-        mvc.perform(get("/test")
+        mvc.perform(get("/common/test")
                 .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void get_to_security_space_with_token() throws Exception {
-        mvc.perform(get("/test")
+        mvc.perform(get("/common/test")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isOk())
@@ -49,7 +49,7 @@ class AuthControllerTest extends WithMvc {
     void get_to_security_space_with_token_deleted() throws Exception {
         account.setDeleted(true);
         assertTrue(accountRepo.save(account).getDeleted());
-        mvc.perform(get("/test")
+        mvc.perform(get("/common/test")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isUnauthorized());
@@ -66,7 +66,7 @@ class AuthControllerTest extends WithMvc {
                 .gender(newAcc.getGender())
                 .bday(newAcc.getBday())
                 .lang(newAcc.getLang())
-                .locationName(newAcc.getLocation().getName())
+                .locationId(newAcc.getLocation().getId())
                 .password(PASS)
                 .uniqueId(newAcc.getDevices().get(0).getUniqueId())
                 .appVersion(newAcc.getDevices().get(0).getAppVersion())
@@ -100,7 +100,7 @@ class AuthControllerTest extends WithMvc {
                 .gender(newAcc.getGender())
                 .bday(newAcc.getBday())
                 .lang(newAcc.getLang())
-                .locationName(newAcc.getLocation().getName())
+                .locationId(newAcc.getLocation().getId())
                 .password(PASS)
                 .uniqueId(newAcc.getDevices().get(0).getUniqueId())
                 .appVersion(newAcc.getDevices().get(0).getAppVersion())
@@ -135,7 +135,7 @@ class AuthControllerTest extends WithMvc {
                 .gender(newAcc.getGender())
                 .bday(newAcc.getBday())
                 .lang(newAcc.getLang())
-                .locationName(newAcc.getLocation().getName())
+                .locationId(newAcc.getLocation().getId())
                 .password(PASS)
                 .uniqueId(account.getDevices().get(0).getUniqueId())
                 .appVersion(newAcc.getDevices().get(0).getAppVersion())
@@ -201,7 +201,7 @@ class AuthControllerTest extends WithMvc {
     @Test
     void logout() throws Exception {
         var devicesBefore = deviceRepo.findAllByOwnerId(account.getId()).size();
-        mvc.perform(post("/logout_easy")
+        mvc.perform(post("/common/logout_easy")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isOk());

@@ -19,6 +19,8 @@ public class PropService {
     public final Duration uiPicCacheTTL;
     public final String androidLeastVersion;
     public final String iosLeastVersion;
+    public final Duration bdayLastChange;
+    public final Duration locationLastChange;
 
 
     public PropService(@Value("${app.dev-now}") String devNow,
@@ -26,7 +28,9 @@ public class PropService {
                        @Value("${rules.max-contacts}") Integer maxContacts,
                        @Value("${rules.ui.ttl.pic-cache}") Duration uiPicCacheTTL,
                        @Value("${flow.least-version.android}") String androidLeastVersion,
-                       @Value("${flow.least-version.ios}") String iosLeastVersion) {
+                       @Value("${flow.least-version.ios}") String iosLeastVersion,
+                       @Value("${rules.bday_last_change}") Duration bdayLastChange,
+                       @Value("${rules.location_last_change}") Duration locationLastChange) {
         if (!TimeZone.getTimeZone("UTC").toZoneId().equals(TimeZone.getDefault().toZoneId()))
             throw new IllegalStateException("TimeZone isn't UTC");
 
@@ -56,5 +60,13 @@ public class PropService {
         if (isEmpty(iosLeastVersion))
             throw new IllegalArgumentException("flow.least-version.ios is empty");
         this.iosLeastVersion = iosLeastVersion;
+
+        if (bdayLastChange == null || bdayLastChange.equals(Duration.ZERO))
+            throw new IllegalArgumentException("rules.bday_last_change is empty");
+        this.bdayLastChange = bdayLastChange;
+
+        if (locationLastChange == null || locationLastChange.equals(Duration.ZERO))
+            throw new IllegalArgumentException("rules.location_last_change is empty");
+        this.locationLastChange = locationLastChange;
     }
 }

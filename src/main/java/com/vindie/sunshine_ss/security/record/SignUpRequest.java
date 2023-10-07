@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static org.hibernate.validator.internal.util.Contracts.assertTrue;
+import static org.springframework.util.StringUtils.hasLength;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,7 +22,7 @@ public class SignUpRequest {
     public Gender gender;
     public LocalDate bday;
     public Language lang;
-    public String locationName;
+    public Long locationId;
 
     public String email;
     public Integer emailCode;
@@ -30,4 +33,17 @@ public class SignUpRequest {
     public String wifiMac;
     public String phoneNum;
     public String appVersion;
+
+    public void validate() {
+        var message = "SignUpRequest validate";
+        assertTrue(hasLength(name), message);
+        assertTrue(gender != null, message);
+        assertTrue(bday != null, message);
+        assertTrue(lang != null, message);
+        assertTrue(locationId != null, message);
+        assertTrue(hasLength(email), message);
+        assertTrue(emailCode != null, message);
+        assertTrue(hasLength(password), message);
+        assertTrue(hasLength(uniqueId), message);
+    }
 }

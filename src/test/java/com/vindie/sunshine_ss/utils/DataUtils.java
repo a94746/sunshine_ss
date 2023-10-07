@@ -49,6 +49,7 @@ public class DataUtils {
                 .minusYears(18)
                 .minusYears(RANDOM.nextInt(60))
                 .minusDays(RANDOM.nextInt(365)));
+        acc.setBdayLastChange(LocalDate.now().minusDays(RANDOM.nextInt(730)));
         acc.setDescription(FAKER.company().catchPhrase());
         acc.setLang(Language.EN);
         acc.setViews(RANDOM.nextInt(100) );
@@ -129,7 +130,7 @@ public class DataUtils {
         return filter;
     }
 
-    private Pic newTypicalPic(Account owner) {
+    public Pic newTypicalPic(Account owner) {
         Pic pic = new Pic();
         pic.setFile(FAKER.file().fileName().getBytes(StandardCharsets.UTF_8));
         pic.setOwner(owner);

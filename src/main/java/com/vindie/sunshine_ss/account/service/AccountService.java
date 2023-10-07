@@ -7,10 +7,14 @@ import com.vindie.sunshine_ss.account.repo.DeviceRepo;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
+import com.vindie.sunshine_ss.common.dto.UiKey;
+import com.vindie.sunshine_ss.common.record.UiContact;
 import com.vindie.sunshine_ss.common.record.UiMyAccount;
 import com.vindie.sunshine_ss.common.record.UiMyFilter;
 import com.vindie.sunshine_ss.common.record.UserInfo;
+import com.vindie.sunshine_ss.common.service.PropService;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
+import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.match.MatchService;
 import com.vindie.sunshine_ss.pic.PicService;
 import com.vindie.sunshine_ss.security.record.User;
@@ -19,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -37,6 +42,40 @@ public class AccountService {
     private CreadService creadService;
     private DeviceService deviceService;
     private MatchService matchService;
+    private PropService propService;
+    private LocationRepo locationRepo;
+
+    @Transactional
+    public UiKey editMy(UiMyAccount ui, User user) {
+        UiKey result = null;
+        var acc = accountRepo.findById(user.getId()).orElseThrow();
+        acc.setName(ui.getName().trim());
+        acc.setDescription(ui.getDescription().trim());
+
+        if (!acc.getBday().isEqual(ui.getBday())) {
+            if (acc.getBdayLastChange().isBefore(LocalDate.now().minus(propService.bdayLastChange))) {
+                acc.setBday(ui.getBday());
+                acc.setBdayLastChange(LocalDate.now());
+            } else {
+                result = UiKey.CANT_CHANGE_BDAY_SO_OFTEN;
+            }
+        }
+        if (!acc.getLocation().getId().equals(ui.getLocationId())) {
+            if (acc.getLocationLastChange().isBefore(LocalDateTime.now().minus(propService.locationLastChange))) {
+                acc.setLocation(locationRepo.getReferenceById(ui.getLocationId()));
+                acc.setLocationLastChange(LocalDateTime.now());
+            } else {
+                result = UiKey.CANT_CHANGE_LOCATION_SO_OFTEN;
+            }
+        }
+        if (acc.getGender() != ui.getGender()) {
+            acc.setViews(0);
+            acc.setLikes(0);
+            acc.setGender(ui.getGender());
+        }
+        accountRepo.save(acc);
+        return result;
+    }
 
     public UiMyAccount getMyAccount(User user) {
         var acc = accountRepo.findForMyAccount(user.getId()).orElseThrow();
@@ -48,7 +87,7 @@ public class AccountService {
         uiMyAccount.setDescription(acc.getDescription());
         uiMyAccount.setGender(acc.getGender());
         uiMyAccount.setBday(acc.getBday());
-        uiMyAccount.setLocationName(acc.getLocation().getName());
+        uiMyAccount.setLocationId(acc.getLocation().getId());
         uiMyAccount.setRating(prem ? acc.getRating() : null);
         uiMyAccount.setActualMatchesNum(prem ? acc.getPremMatchesNum() : acc.getMatchesNum());
         uiMyAccount.setPrem(prem);
@@ -74,7 +113,14 @@ public class AccountService {
             uiMyFilter.getChatPrefs().put(chatPref, active);
         }
         uiMyAccount.setFilter(uiMyFilter);
-        acc.getContacts().forEach(c -> uiMyAccount.getContacts().put(c.getKey(), c.getValue()));
+        acc.getContacts().forEach(c -> {
+            var uiContact = UiContact.builder()
+                    .id(c.getId())
+                    .key(c.getKey())
+                    .value(c.getValue())
+                    .build();
+            uiMyAccount.getContacts().add(uiContact);
+        });
         uiMyAccount.getPicInfos().addAll(picService.getPicInfosByOwnerId(acc.getId()));
         return uiMyAccount;
     }
@@ -87,6 +133,7 @@ public class AccountService {
 
     @Transactional
     public void changeEmail(String newEmail, User user) {
+
         creadRepo.changeEmail(newEmail, user.getId());
     }
 

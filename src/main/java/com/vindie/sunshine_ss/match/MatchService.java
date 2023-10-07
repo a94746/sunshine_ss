@@ -2,6 +2,7 @@ package com.vindie.sunshine_ss.match;
 
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.repo.ContactRepo;
+import com.vindie.sunshine_ss.common.record.UiContact;
 import com.vindie.sunshine_ss.common.record.UiLike;
 import com.vindie.sunshine_ss.common.record.event.ss.CoupleLikedMatchSsEvent;
 import com.vindie.sunshine_ss.common.record.event.ss.SingleLikedMatchSsEvent;
@@ -49,7 +50,7 @@ public class MatchService {
                 .filter(m -> m.getOwner().getId().equals(user.getId()))
                 .findFirst()
                 .orElseThrow();
-        accountRepo.incrementViews(List.of(partnerMatch.getOwner().getId()));
+        accountRepo.incrementLikes(List.of(partnerMatch.getOwner().getId()));
         myMatch.setLiked(true);
         myMatch.setMessage(user.isPrem() ? uiLike.getMessage() : null);
         matchRepo.save(myMatch);
@@ -127,7 +128,14 @@ public class MatchService {
                                         .forEach(g -> ui.getRelations().add(r2g.getRelation())));
                     }
                     contactRepo.findAllByOwnerId(partner.getId())
-                            .forEach(c -> ui.getContacts().put(c.getKey(), c.getValue()));
+                            .forEach(c -> {
+                                var uiContact = UiContact.builder()
+                                        .id(c.getId())
+                                        .key(c.getKey())
+                                        .value(c.getValue())
+                                        .build();
+                                ui.getContacts().add(uiContact);
+                            });
                     return ui;
                 })
                 .toList();

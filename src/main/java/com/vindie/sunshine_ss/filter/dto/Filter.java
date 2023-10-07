@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -32,7 +31,7 @@ public class Filter {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "filter", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<RelationWithGenders> relationsWithGenders;
+    private Set<RelationWithGenders> relationsWithGenders;
 
     @ElementCollection(targetClass = ChatPref.class, fetch = FetchType.EAGER)
     @JoinTable(name = "filters_to_chat_prefs", joinColumns = @JoinColumn(name = "filter_id"))

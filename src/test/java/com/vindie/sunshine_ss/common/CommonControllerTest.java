@@ -2,16 +2,19 @@ package com.vindie.sunshine_ss.common;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vindie.sunshine_ss.base.WithMvc;
+import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.email.EmailService;
 import com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog;
 import com.vindie.sunshine_ss.common.record.UiSettings;
 import com.vindie.sunshine_ss.common.service.VersionUtils;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
+import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.vindie.sunshine_ss.security.config.RequestFilter.MY_HEADER_NAME;
@@ -124,7 +127,7 @@ class CommonControllerTest extends WithMvc {
 
     @Test
     void get_settings_test() throws Exception {
-        mvc.perform(get("/settings")
+        mvc.perform(get("/common/settings")
                         .header(MY_HEADER_NAME, myHeaderCode)
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
                 .andExpect(status().isOk())
@@ -143,7 +146,7 @@ class CommonControllerTest extends WithMvc {
         queueParserTimer.timer();
         assertEquals(2, eventLineRepo.findAll().size());
 
-        mvc.perform(get("/login_opening_dialogs")
+        mvc.perform(get("/common/login_opening_dialogs")
                         .header(MY_HEADER_NAME, myHeaderCode)
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
                 .andExpect(status().isOk())
@@ -154,12 +157,45 @@ class CommonControllerTest extends WithMvc {
         assertEquals(2, eventLineRepo.findAll().size());
         assertEquals(0, queueElementRepo.findAll().size());
 
-        mvc.perform(get("/login_opening_dialogs")
+        mvc.perform(get("/common/login_opening_dialogs")
                         .header(MY_HEADER_NAME, myHeaderCode)
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
                 .andExpect(status().isOk())
                 .andExpect(modelMatches(new TypeReference<List<UiLoginOpeningDialog>>() {}, l -> {
                     assertEquals(0, l.size());
+                }));
+    }
+
+    @Test
+    void get_chatPrefs() throws Exception {
+        mvc.perform(get("/common/chat_prefs")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(new TypeReference<List<ChatPref>>() {}, l -> {
+                    assertEquals(ChatPref.values().length, l.size());
+                }));
+    }
+
+    @Test
+    void get_locations() throws Exception {
+        mvc.perform(get("/common/locations")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(new TypeReference<List<Location>>() {}, l -> {
+                    assertEquals(locationRepo.findAll().size(), l.size());
+                }));
+    }
+
+    @Test
+    void get_lastscheduling() throws Exception {
+        mvc.perform(get("/common/last_scheduling")
+                        .header(MY_HEADER_NAME, myHeaderCode)
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
+                .andExpect(status().isOk())
+                .andExpect(modelMatches(LocalDateTime.class, t -> {
+                    assertEquals(locationRepo.findById(account.getLocation().getId()).get().getLastScheduling().getHour(), t.getHour());
                 }));
     }
 

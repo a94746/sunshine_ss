@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -35,14 +36,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public JwtAuthenticationResponse signup(SignUpRequest request) {
+        request.validate();
         var account = Account.builder()
-                .name(request.name)
+                .name(request.name.trim())
                 .lastPresence(LocalDateTime.now())
-                .description(request.description)
+                .description(request.description.trim())
                 .gender(request.gender)
                 .bday(request.bday)
+                .bdayLastChange(LocalDate.now())
                 .lang(request.lang)
-                .location(locationRepo.findByName(request.locationName).orElseThrow())
+                .location(locationRepo.getReferenceById(request.locationId))
                 .locationLastChange(LocalDateTime.now())
                 .deleted(false)
                 .likes(0)
@@ -57,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var cread = Cread.builder()
                 .owner(account)
-                .email(request.email)
+                .email(request.email.trim())
                 .pass(passwordEncoder.encode(request.getPassword()))
                 .build();
         account.setCread(cread);
@@ -84,6 +87,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public JwtAuthenticationResponse signin(SigninRequest request) {
+        request.validate();
         User user = null;
 
         if (hasLength(request.pass)) {

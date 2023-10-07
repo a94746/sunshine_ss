@@ -27,13 +27,22 @@ public class AccountController {
         return accountService.getMyAccount(CurUserService.get());
     }
 
+    @PutMapping("/edit_my")
+    public void editMy(@RequestBody UiMyAccount uiMyAccount) {
+        UiKey error = accountService.editMy(uiMyAccount, CurUserService.get());
+        if (error != null)
+            throw new SunshineException(error);
+    }
+
     @PostMapping("/take_info")
     public void takeInfo(@RequestBody UserInfo info) {
+        info.validate();
         accountService.takeInfo(info, CurUserService.get());
     }
 
     @PostMapping("/change_email")
     public void changeEmail(@RequestBody ChangeEmail request) {
+        request.validate();
         if (creadRepo.findFirstByEmail(request.getNewEmail()).isPresent())
             throw new SunshineException(UiKey.NO_UNIQUE_EMAIL);
         if (!emailService.isCorrectEmailCode(request.getNewEmail(), request.getEmailCode()))
