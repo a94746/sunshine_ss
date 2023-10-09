@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="devices_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="devices_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="devices">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="app_version" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_entry" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="imei" type="VARCHAR(255)"/>
+            <column name="logout_owner_id" type="BIGINT"/>
+            <column name="phone_num" type="VARCHAR(255)"/>
+            <column name="unique_id" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="wifi_mac" type="VARCHAR(255)"/>
+            <column name="owner_id" type="BIGINT"/>
+            <column name="android_id" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createIndex indexName="owner_id_index" tableName="devices">
+            <column name="owner_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="owner_id"
+                                 baseTableName="devices"
+                                 constraintName="fk_devices_owner_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="accounts"
+                                 validate="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>

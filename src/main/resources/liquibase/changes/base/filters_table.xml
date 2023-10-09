@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="filters_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filters_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="filters">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="age_from" type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age_to" type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

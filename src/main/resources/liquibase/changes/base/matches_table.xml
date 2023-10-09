@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="matches_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="matches_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="matches">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="liked" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="VARCHAR(255)"/>
+            <column name="viewed" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="partner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pair_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="partner_id_index" tableName="matches">
+            <column name="partner_id"/>
+        </createIndex>
+        <createIndex indexName="owner_id_index" tableName="matches">
+            <column name="owner_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="partner_id"
+                                 baseTableName="matches"
+                                 constraintName="fk_matches_partner_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="accounts"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="owner_id"
+                                 baseTableName="matches"
+                                 constraintName="fk_matches_owner_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="accounts"
+                                 validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

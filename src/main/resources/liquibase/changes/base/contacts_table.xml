@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="contacts_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="contacts_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="contacts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="k" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="v" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="owner_id_index" tableName="contacts">
+            <column name="owner_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="owner_id"
+                                 baseTableName="contacts"
+                                 constraintName="fk_contacts_owner_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="accounts"
+                                 validate="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="accounts_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="accounts_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="accounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="bday" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1010)"/>
+            <column name="gender" type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lang" type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_presence" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="likes" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="matches_num" type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prem_matches_num" type="TINYINT(3)"/>
+            <column name="prem_till" type="datetime"/>
+            <column name="rating" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="views" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cread_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="filter_id" type="BIGINT">
+                <constraints unique="true"/>
+            </column>
+            <column name="location_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bday_last_change" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_last_change" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="location_id_index" tableName="accounts">
+            <column name="location_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="accounts"
+                                 constraintName="fk_accounts_location_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="locations"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="cread_id"
+                                 baseTableName="accounts"
+                                 constraintName="fk_accounts_cread_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="creads"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="filter_id"
+                                 baseTableName="accounts"
+                                 constraintName="fk_accounts_filter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="filters"
+                                 validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

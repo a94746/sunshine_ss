@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="changes/base/locations_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/creads_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/filters_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/filters_to_chat_prefs_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/relations_with_genders_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/relation_with_genders_to_genders_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/accounts_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/contacts_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/devices_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/event_lines_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/matches_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/pics_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/queue_table.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

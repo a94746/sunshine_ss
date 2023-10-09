@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="filters_to_chat_prefs_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filters_to_chat_prefs_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="filters_to_chat_prefs">
+            <column name="filter_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="chat_prefs" type="TINYINT(3)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="filter_id"
+                                 baseTableName="filters_to_chat_prefs"
+                                 constraintName="fk_filters_to_chat_prefs_filter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="filters"
+                                 validate="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>

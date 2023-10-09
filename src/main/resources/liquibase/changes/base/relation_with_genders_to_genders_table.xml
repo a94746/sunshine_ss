@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="relation_with_genders_to_genders_table">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="relation_with_genders_to_genders_table"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="relation_with_genders_to_genders">
+            <column name="relation_with_genders_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="gender" type="TINYINT(3)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="relation_with_genders_id"
+                                 baseTableName="relation_with_genders_to_genders"
+                                 constraintName="fk_relation_with_genders_to_genders_relation_with_genders_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="relations_with_genders"
+                                 validate="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>
