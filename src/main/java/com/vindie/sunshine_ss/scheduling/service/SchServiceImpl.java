@@ -3,6 +3,7 @@ package com.vindie.sunshine_ss.scheduling.service;
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.service.AccountService;
+import com.vindie.sunshine_ss.common.metrics.MetricService;
 import com.vindie.sunshine_ss.common.record.event.ss.DailyMatchesSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
@@ -35,6 +36,7 @@ public class SchServiceImpl implements SchService {
     private LocationRepo locationRepo;
     private AccountRepo accountRepo;
     private ApplicationEventPublisher eventPublisher;
+    private MetricService metricService;
 
     @Override
     @Async
@@ -75,7 +77,19 @@ public class SchServiceImpl implements SchService {
         eventPublisher.publishEvent(event);
         matchRepo.saveAll(mathes);
         accountRepo.incrementViews(schResult.keySet());
-        log.info("End   runSch for: {} in {} sec", location.getName(), Duration.between(start, Instant.now()).getNano() * 0.000000001D);
+
+
+        Double durationSec = Duration.between(start, Instant.now()).getNano() * 0.000000001D;
+        log.info("End   runSch for: {} in {} sec", location.getName(), durationSec);
+        int peopleNum = accountRepo.countByLocationId(location.getId());
+        metricService.setPeopleNum(location.getId(), peopleNum);
+        metricService.setPeoplePercentHaveMatches(location.getId(), peopleNum == 0 ? 0 : ((schResult.size() * 100D) / peopleNum));
+        double avgMatches = schResult.values().stream()
+                .mapToInt(Map::size)
+                .average()
+                .orElse(0);
+        metricService.setNumOfMatchesPerPerson(location.getId(), avgMatches);
+        metricService.setSchedulingTimeSec(location.getId(), durationSec);
     }
 
     @Override

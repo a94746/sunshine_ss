@@ -47,6 +47,7 @@ public class CommonService {
     public UiSettings gerSettings() {
         var uiSettings = new UiSettings();
         uiSettings.setPicCacheTTL(propService.uiPicCacheTTL);
+        uiSettings.setMatchesFrequency(propService.matchesFrequency);
         return uiSettings;
     }
 

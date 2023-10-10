@@ -8,4 +8,5 @@ import java.time.Duration;
 public class UiSettings {
 
     private Duration picCacheTTL;
+    private Duration matchesFrequency;
 }

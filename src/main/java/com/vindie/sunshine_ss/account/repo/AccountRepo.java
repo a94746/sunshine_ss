@@ -65,6 +65,12 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
             "AND a.deleted = FALSE")
     List<Account> findForScheduling(Long locationId);
 
+    @Query("SELECT COUNT(a.id) FROM Account a " +
+            "WHERE a.location.id = :locationId " +
+            "AND a.filter IS NOT NULL " +
+            "AND a.deleted = FALSE")
+    int countByLocationId(Long locationId);
+
     @Query("SELECT a FROM Account a " +
             "LEFT JOIN FETCH a.filter " +
             "LEFT JOIN FETCH a.cread " +

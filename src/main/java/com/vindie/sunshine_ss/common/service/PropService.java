@@ -21,6 +21,7 @@ public class PropService {
     public final String iosLeastVersion;
     public final Duration bdayLastChange;
     public final Duration locationLastChange;
+    public final Duration matchesFrequency;
 
 
     public PropService(@Value("${app.dev-now}") String devNow,
@@ -30,7 +31,8 @@ public class PropService {
                        @Value("${flow.least-version.android}") String androidLeastVersion,
                        @Value("${flow.least-version.ios}") String iosLeastVersion,
                        @Value("${rules.bday_last_change}") Duration bdayLastChange,
-                       @Value("${rules.location_last_change}") Duration locationLastChange) {
+                       @Value("${rules.location_last_change}") Duration locationLastChange,
+                       @Value("${rules.matches_frequency}") Duration matchesFrequency) {
         if (!TimeZone.getTimeZone("UTC").toZoneId().equals(TimeZone.getDefault().toZoneId()))
             throw new IllegalStateException("TimeZone isn't UTC");
 
@@ -68,5 +70,9 @@ public class PropService {
         if (locationLastChange == null || locationLastChange.equals(Duration.ZERO))
             throw new IllegalArgumentException("rules.location_last_change is empty");
         this.locationLastChange = locationLastChange;
+
+        if (matchesFrequency == null || matchesFrequency.equals(Duration.ZERO))
+            throw new IllegalArgumentException("rules.matches_frequency is empty");
+        this.matchesFrequency = matchesFrequency;
     }
 }
