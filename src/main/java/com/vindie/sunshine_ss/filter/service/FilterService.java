@@ -2,11 +2,11 @@ package com.vindie.sunshine_ss.filter.service;
 
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.common.dto.Relation;
-import com.vindie.sunshine_ss.common.record.UiMyFilter;
 import com.vindie.sunshine_ss.filter.dto.Filter;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
 import com.vindie.sunshine_ss.filter.repo.FilterRepo;
 import com.vindie.sunshine_ss.security.record.User;
+import com.vindie.sunshine_ss.ui_dto.UiMyFilter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

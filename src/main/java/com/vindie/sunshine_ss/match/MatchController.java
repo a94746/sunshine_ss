@@ -2,10 +2,10 @@ package com.vindie.sunshine_ss.match;
 
 import com.vindie.sunshine_ss.common.dto.UiKey;
 import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
-import com.vindie.sunshine_ss.common.record.UiLike;
-import com.vindie.sunshine_ss.match.record.UiDailyMatch;
-import com.vindie.sunshine_ss.match.record.UiLikedMatch;
 import com.vindie.sunshine_ss.security.service.CurUserService;
+import com.vindie.sunshine_ss.ui_dto.UiDailyMatch;
+import com.vindie.sunshine_ss.ui_dto.UiLike;
+import com.vindie.sunshine_ss.ui_dto.UiLikedMatch;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

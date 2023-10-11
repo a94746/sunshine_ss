@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vindie.sunshine_ss.base.WithDbData.PASS;
+import static com.vindie.sunshine_ss.base.WithData.PASS;
 
 @Service
 public class DataUtils {

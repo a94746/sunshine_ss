@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss.account;
 
-import com.vindie.sunshine_ss.base.WithMvc;
-import com.vindie.sunshine_ss.common.record.UiContact;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
+import com.vindie.sunshine_ss.ui_dto.UiContact;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ContactControllerTest extends WithMvc {
+class ContactControllerTest extends WithMvcAndSocket {
 
     @Test
     void create() throws Exception {

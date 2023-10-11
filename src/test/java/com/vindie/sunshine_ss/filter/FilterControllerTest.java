@@ -1,10 +1,10 @@
 package com.vindie.sunshine_ss.filter;
 
-import com.vindie.sunshine_ss.base.WithMvc;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
-import com.vindie.sunshine_ss.common.record.UiMyAccount;
 import com.vindie.sunshine_ss.filter.repo.RelationWithGendersRepo;
+import com.vindie.sunshine_ss.ui_dto.UiMyAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class FilterControllerTest extends WithMvc {
+class FilterControllerTest extends WithMvcAndSocket {
     @Autowired
     RelationWithGendersRepo relationWithGendersRepo;
     @Test

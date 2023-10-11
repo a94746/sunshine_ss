@@ -1,14 +1,14 @@
 package com.vindie.sunshine_ss.account;
 
-import com.vindie.sunshine_ss.base.WithMvc;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Language;
 import com.vindie.sunshine_ss.common.dto.Relation;
 import com.vindie.sunshine_ss.common.email.EmailService;
-import com.vindie.sunshine_ss.common.record.ChangeEmail;
-import com.vindie.sunshine_ss.common.record.UiMyAccount;
-import com.vindie.sunshine_ss.common.record.UserInfo;
+import com.vindie.sunshine_ss.security.record.ChangeEmail;
+import com.vindie.sunshine_ss.ui_dto.UiMyAccount;
+import com.vindie.sunshine_ss.ui_dto.UserInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AccountControllerTest extends WithMvc {
+class AccountControllerTest extends WithMvcAndSocket {
 
     @Autowired
     EmailService emailService;

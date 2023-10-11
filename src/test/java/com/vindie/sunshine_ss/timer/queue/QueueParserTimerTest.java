@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss.timer.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.base.WithDbData;
+import com.vindie.sunshine_ss.base.WithData;
 import com.vindie.sunshine_ss.common.record.event.ss.QueueNotifsSsEvent;
 import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class QueueParserTimerTest extends WithDbData {
+class QueueParserTimerTest extends WithData {
     @Autowired
     private QueueParserTimer queueParserTimer;
 

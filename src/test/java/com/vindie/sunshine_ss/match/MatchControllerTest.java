@@ -1,12 +1,12 @@
 package com.vindie.sunshine_ss.match;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vindie.sunshine_ss.base.WithMvc;
-import com.vindie.sunshine_ss.common.record.UiLike;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
 import com.vindie.sunshine_ss.common.record.event.ss.CoupleLikedMatchSsEvent;
 import com.vindie.sunshine_ss.common.record.event.ss.SingleLikedMatchSsEvent;
-import com.vindie.sunshine_ss.match.record.UiDailyMatch;
-import com.vindie.sunshine_ss.match.record.UiLikedMatch;
+import com.vindie.sunshine_ss.ui_dto.UiDailyMatch;
+import com.vindie.sunshine_ss.ui_dto.UiLike;
+import com.vindie.sunshine_ss.ui_dto.UiLikedMatch;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class MatchControllerTest extends WithMvc {
+class MatchControllerTest extends WithMvcAndSocket {
 
     @Test
     void get_daily_test() throws Exception {

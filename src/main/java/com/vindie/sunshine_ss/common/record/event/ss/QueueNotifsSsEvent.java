@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.common.record.event.ss;
 
-import com.vindie.sunshine_ss.common.record.NotifRecord;
+import com.vindie.sunshine_ss.ui_dto.NotifRecord;
 import lombok.Getter;
 
 @Getter

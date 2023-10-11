@@ -1,15 +1,15 @@
 package com.vindie.sunshine_ss.common;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vindie.sunshine_ss.base.WithMvc;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.email.EmailService;
-import com.vindie.sunshine_ss.common.record.UiLoginOpeningDialog;
-import com.vindie.sunshine_ss.common.record.UiSettings;
 import com.vindie.sunshine_ss.common.service.VersionUtils;
 import com.vindie.sunshine_ss.common.timers.queue.QueueParserTimer;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
+import com.vindie.sunshine_ss.ui_dto.UiLoginOpeningDialog;
+import com.vindie.sunshine_ss.ui_dto.UiSettings;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class CommonControllerTest extends WithMvc {
+class CommonControllerTest extends WithMvcAndSocket {
     @Autowired
     private VersionUtils versionUtils;
     @Autowired

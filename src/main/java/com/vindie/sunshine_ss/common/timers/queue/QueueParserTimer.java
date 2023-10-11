@@ -2,7 +2,6 @@ package com.vindie.sunshine_ss.common.timers.queue;
 
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
-import com.vindie.sunshine_ss.common.record.NotifRecord;
 import com.vindie.sunshine_ss.common.record.event.ss.QueueNotifsSsEvent;
 import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationRepo;
@@ -10,6 +9,7 @@ import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import com.vindie.sunshine_ss.queue.repo.EventLineRepo;
 import com.vindie.sunshine_ss.queue.repo.QueueElementRepo;
+import com.vindie.sunshine_ss.ui_dto.NotifRecord;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

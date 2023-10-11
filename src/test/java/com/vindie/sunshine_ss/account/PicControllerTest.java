@@ -1,9 +1,9 @@
 package com.vindie.sunshine_ss.account;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vindie.sunshine_ss.base.WithMvc;
-import com.vindie.sunshine_ss.common.record.UiPic;
-import com.vindie.sunshine_ss.common.record.UiPicInfo;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
+import com.vindie.sunshine_ss.ui_dto.UiPic;
+import com.vindie.sunshine_ss.ui_dto.UiPicInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class PicControllerTest extends WithMvc {
+class PicControllerTest extends WithMvcAndSocket {
 
     @Test
     void create() throws Exception {

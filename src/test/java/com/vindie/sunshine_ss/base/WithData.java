@@ -26,7 +26,7 @@ import static com.vindie.sunshine_ss.utils.DataUtils.getRandomElement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public abstract class WithDbData extends WithDbContener {
+public abstract class WithData extends WithDb {
     public static final String PASS = "12345678";
     protected static final Random RANDOM = new Random();
 
@@ -58,7 +58,7 @@ public abstract class WithDbData extends WithDbContener {
     protected Account account;
 
     @BeforeEach
-    public void createData() {
+    protected void createData() {
         final int locationsNum = 2;
         final int accountsNum = 83;
         final int matchPairsNum = 10;

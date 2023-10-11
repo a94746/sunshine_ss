@@ -2,10 +2,10 @@ package com.vindie.sunshine_ss.pic;
 
 import com.vindie.sunshine_ss.common.dto.UiKey;
 import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
-import com.vindie.sunshine_ss.common.record.UiPic;
-import com.vindie.sunshine_ss.common.record.UiPicInfo;
 import com.vindie.sunshine_ss.common.service.PropService;
 import com.vindie.sunshine_ss.security.service.CurUserService;
+import com.vindie.sunshine_ss.ui_dto.UiPic;
+import com.vindie.sunshine_ss.ui_dto.UiPicInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;

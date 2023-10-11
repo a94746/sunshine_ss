@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss.timer.account;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.base.WithDbData;
+import com.vindie.sunshine_ss.base.WithData;
 import com.vindie.sunshine_ss.common.timers.account.RatingTimer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
-class RatingTimerTest extends WithDbData {
+class RatingTimerTest extends WithData {
 
     @Autowired
     private RatingTimer ratingTimer;

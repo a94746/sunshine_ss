@@ -1,9 +1,9 @@
 package com.vindie.sunshine_ss.pic;
 
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
-import com.vindie.sunshine_ss.common.record.UiPic;
-import com.vindie.sunshine_ss.common.record.UiPicInfo;
 import com.vindie.sunshine_ss.security.record.User;
+import com.vindie.sunshine_ss.ui_dto.UiPic;
+import com.vindie.sunshine_ss.ui_dto.UiPicInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

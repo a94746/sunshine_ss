@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.security;
 
-import com.vindie.sunshine_ss.base.WithMvc;
+import com.vindie.sunshine_ss.base.WithMvcAndSocket;
 import com.vindie.sunshine_ss.common.email.EmailService;
 import com.vindie.sunshine_ss.security.record.PasswordRecovery;
 import com.vindie.sunshine_ss.security.record.SignUpRequest;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AuthControllerTest extends WithMvc {
+class AuthControllerTest extends WithMvcAndSocket {
     @Autowired
     EmailService emailService;
 

@@ -12,6 +12,7 @@ import com.vindie.sunshine_ss.push_and_socket.push.PushService;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;
 import com.vindie.sunshine_ss.utils.EventUtils;
 import org.awaitility.core.ConditionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,9 +45,14 @@ public abstract class SunshineSsApplicationTests {
     @MockBean
     private EmailSenderService emailSenderService;
     @MockBean
-    private KindaSocketService kindaSocketService;
-    @MockBean
     private PushService pushService;
+    @Autowired
+    private KindaSocketService kindaSocketService;
+
+    @AfterEach
+    protected void afterEach() throws Exception {
+        kindaSocketService.destroy();
+    }
 
     protected ConditionFactory checkEverySec() {
         return checkEverySec(10);

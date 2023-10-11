@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.timer.match;
 
-import com.vindie.sunshine_ss.base.WithDbData;
+import com.vindie.sunshine_ss.base.WithData;
 import com.vindie.sunshine_ss.common.record.event.ss.DailyMatchesSsEvent;
 import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
 import com.vindie.sunshine_ss.common.timers.match.DailyMatchTimer;
@@ -15,7 +15,7 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DailyMatchTimerTest extends WithDbData {
+class DailyMatchTimerTest extends WithData {
     @Autowired
     public DailyMatchTimer dailyMatchTimer;
     @Autowired

@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss.timer.account;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.base.WithDbData;
+import com.vindie.sunshine_ss.base.WithData;
 import com.vindie.sunshine_ss.common.timers.account.AccountPremCleanerTimer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AccountPremCleanerTimerTest extends WithDbData {
+class AccountPremCleanerTimerTest extends WithData {
     @Autowired
     private AccountPremCleanerTimer accountPremCleanerTimer;
 

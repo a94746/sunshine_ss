@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss.timer.match;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.base.WithDbData;
+import com.vindie.sunshine_ss.base.WithData;
 import com.vindie.sunshine_ss.common.timers.match.MatchCleanerTimer;
 import com.vindie.sunshine_ss.match.Match;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class MatchCleanerTimerTest extends WithDbData {
+class MatchCleanerTimerTest extends WithData {
     @Autowired
     public MatchCleanerTimer matchCleanerTimer;
 

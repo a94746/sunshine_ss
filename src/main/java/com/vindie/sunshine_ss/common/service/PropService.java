@@ -39,7 +39,7 @@ public class PropService {
         this.devNow = "true".equals(devNow);
         if (this.devNow) {
             for (int i = 0; i < 5; i++) {
-                log.warn("Dev-now is on!!!");
+                log.info("Dev-now is on!!!");
             }
         }
 
