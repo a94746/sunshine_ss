@@ -23,7 +23,7 @@ services:
       MYSQL_HOST: mysql
     ports:
       - 8787:8787
-      - 4255:8080
+      - 8080:8080
       - 3300:3300
     depends_on:
       - mysql
