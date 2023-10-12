@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 /**
- * записи в эту таблицу мы заносим вручную
- * Таймер их обрабатывает и создаёт новую таблицу для рассылки по пользователям
+ * Entries in this table should be entered manually
+ * The timer processes them and creates a new table for distribution to users
  */
 @Entity
 @Table(name = "event_lines")
@@ -23,16 +23,16 @@ public class EventLine {
     private String text;
 
     @Column(name = "notification", nullable = false)
-    private Boolean notification; // или уведомление по сокету или диалог при открытии приложения
+    private Boolean notification; // either notification or opening dialog
 
     @Column(name = "opening_dialog", nullable = false)
-    private Boolean openingDialog; // или уведомление по сокету или диалог при открытии приложения
+    private Boolean openingDialog; // either notification or opening dialog
 
     @Column(name = "owner_id")
-    private Long ownerId; // или овнер или локейшн
+    private Long ownerId; // either owner or location
 
     @Column(name = "location_id")
-    private Long locationId; // или овнер или локейшн
+    private Long locationId; // either owner or location
 
     @Column(name = "processed", nullable = false)
     private Boolean processed;

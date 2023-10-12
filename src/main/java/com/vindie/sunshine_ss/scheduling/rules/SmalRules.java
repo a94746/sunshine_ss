@@ -25,14 +25,14 @@ public class SmalRules {
 
 
     /**
-     * второй подходит под предпочтения первого
+     * the second one fits the preferences of the first one
      */
     private static final BiPredicate<SchAccount, SchAccount> ONE_SUITABLE_AGE =
             (a1, a2) -> a2.getAge() >= a1.getAgeFrom() && a2.getAge() <= a1.getAgeTo();
     public static final BiPredicate<SchAccount, SchAccount> TWO_SUITABLE_AGE =
             (a1, a2) -> ONE_SUITABLE_AGE.test(a1, a2) && ONE_SUITABLE_AGE.test(a2, a1);
     /**
-     * второй подходит под предпочтения первого
+     * the second one fits the preferences of the first one
      */
     public static final BiPredicate<SchAccount, SchAccount> TWO_SUITABLE_GENDER =
             (a1, a2) -> {

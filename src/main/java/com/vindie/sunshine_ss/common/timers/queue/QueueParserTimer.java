@@ -26,7 +26,7 @@ import static java.util.Collections.singletonList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * тут мы переносим внесённые вручную записи в таблицу eventLine в таблицу Queue
+ * Here we transfer the manually entered entries in the eventLine table to the Queue table
  */
 @Service
 @AllArgsConstructor

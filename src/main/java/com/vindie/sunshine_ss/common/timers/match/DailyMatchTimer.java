@@ -15,9 +15,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * тут мы переносим внесённые вручную записи из таблицы eventLine в таблицу Queue
- */
 @Service
 @AllArgsConstructor
 @Slf4j

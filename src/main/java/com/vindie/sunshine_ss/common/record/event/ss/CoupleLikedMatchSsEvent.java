@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class CoupleLikedMatchSsEvent extends SsEvent {
     private final long firstLikedId;
-    private final long secondLikedId; // тот кто лайкнул последним
+    private final long secondLikedId; // who liked last
     public CoupleLikedMatchSsEvent(long firstLikedId, long secondLikedId) {
         super(Type.COUPLE_LIKED_MATCH);
         this.firstLikedId = firstLikedId;
