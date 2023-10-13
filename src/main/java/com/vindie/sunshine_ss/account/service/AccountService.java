@@ -68,11 +68,6 @@ public class AccountService {
                 result = UiKey.CANT_CHANGE_LOCATION_SO_OFTEN;
             }
         }
-        if (acc.getGender() != ui.getGender()) {
-            acc.setViews(0);
-            acc.setLikes(0);
-            acc.setGender(ui.getGender());
-        }
         accountRepo.save(acc);
         return result;
     }
@@ -133,8 +128,12 @@ public class AccountService {
 
     @Transactional
     public void changeEmail(String newEmail, User user) {
-
         creadRepo.changeEmail(newEmail, user.getId());
+    }
+
+    @Transactional
+    public void fakeDelete(Long id) {
+        accountRepo.fakeDelete(id);
     }
 
     public List<Account> findForScheduling(Long locationId) {

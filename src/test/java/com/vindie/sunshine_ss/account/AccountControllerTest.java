@@ -30,7 +30,7 @@ class AccountControllerTest extends WithMvcAndSocket {
     @Test
     void edit_acc_test() throws Exception {
         var accsBefore = accountRepo.findAll();
-        var json = mvc.perform(get("/account/get_my")
+        var json = mvc.perform(get("/account/my")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isOk())
@@ -41,18 +41,16 @@ class AccountControllerTest extends WithMvcAndSocket {
         var newName = "svfsdvs.sk23dv";
         acc.setName(newName);
 
-        mvc.perform(put("/account/edit_my")
+        mvc.perform(put("/account/my")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode)
                         .content(MAPPER.writeValueAsString(acc))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        mvc.perform(get("/account/get_my")
+        mvc.perform(get("/account/my")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
-                        .header(MY_HEADER_NAME, myHeaderCode)
-                        .content(MAPPER.writeValueAsString(acc))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isOk())
                 .andExpect(modelMatches(UiMyAccount.class, a -> {
                     assertEquals(newName, a.getName());
@@ -86,7 +84,7 @@ class AccountControllerTest extends WithMvcAndSocket {
     @Test
     @Transactional
     void get_my_test() throws Exception {
-        mvc.perform(get("/account/get_my")
+        mvc.perform(get("/account/my")
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
                         .header(MY_HEADER_NAME, myHeaderCode))
                 .andExpect(status().isOk())
@@ -132,5 +130,21 @@ class AccountControllerTest extends WithMvcAndSocket {
         assertEquals(account.getId(), creadRepo.findFirstByEmail(newEmail).get().getOwner().getId());
         assertTrue(creadRepo.findFirstByEmail(account.getCread().getEmail()).isEmpty());
         assertEquals(creadsBefore.size(), creadRepo.findAll().size());
+    }
+
+    @Test
+    void delete_acc_test() throws Exception {
+        var accsBefore = accountRepo.findAll();
+        mvc.perform(delete("/account/my")
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
+                        .header(MY_HEADER_NAME, myHeaderCode))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/account/my")
+                        .header(HttpHeaders.AUTHORIZATION, getJwtHeader())
+                        .header(MY_HEADER_NAME, myHeaderCode))
+                .andExpect(status().isUnauthorized());
+        assertEquals(accsBefore.size(), accountRepo.findAll().size());
+        assertTrue(accountRepo.findById(account.getId()).orElseThrow().getDeleted());
     }
 }

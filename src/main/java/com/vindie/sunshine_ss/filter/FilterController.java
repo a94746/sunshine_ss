@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FilterController {
     private FilterService filterService;
 
-    @PutMapping("/edit_my")
+    @PutMapping("/my")
     public void editMy(@RequestBody UiMyFilter uiMyFilter) {
         filterService.editMy(uiMyFilter, CurUserService.get());
     }

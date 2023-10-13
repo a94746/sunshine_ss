@@ -6,8 +6,8 @@ import java.util.function.BiPredicate;
 
 public class Flow {
     private Flow() {}
-    public static final float RATING_BOUND = 60F;
-    public static final float RATING_BOUND_PREM = 85F;
+    public static final float RATING_BOUND = 80F;
+    public static final float RATING_BOUND_PREM = 90F;
     public static final int LAST_PRESENCE_LIMIT_HOURS = 72;
     public static final int LAST_PRESENCE_LIMIT_HOURS_PREM = 120;
 

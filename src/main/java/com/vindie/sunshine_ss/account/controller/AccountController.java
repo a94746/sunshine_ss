@@ -22,16 +22,21 @@ public class AccountController {
     private final CreadRepo creadRepo;
     private final EmailService emailService;
 
-    @GetMapping("/get_my")
+    @GetMapping("/my")
     public UiMyAccount getMy() {
         return accountService.getMyAccount(CurUserService.get());
     }
 
-    @PutMapping("/edit_my")
+    @PutMapping("/my")
     public void editMy(@RequestBody UiMyAccount uiMyAccount) {
         UiKey error = accountService.editMy(uiMyAccount, CurUserService.get());
         if (error != null)
             throw new SunshineException(error);
+    }
+
+    @DeleteMapping("/my")
+    public void takeInfo() {
+        accountService.fakeDelete(CurUserService.get().getId());
     }
 
     @PostMapping("/take_info")
