@@ -16,7 +16,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(SunshineException.class)
     protected ResponseEntity<Object> sunshineException(RuntimeException ex, WebRequest request) {
         SunshineException sunshineException = (SunshineException) ex;
-        return handleExceptionInternal(ex, sunshineException.getUiExceprion().getKey(),
+        return handleExceptionInternal(ex, sunshineException.getUiExceprion().toString(),
                 new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
