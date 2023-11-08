@@ -1,0 +1,59 @@
+services:
+
+  mysql:
+    container_name: mysql
+    image: mysql
+    command: --default-authentication-plugin=caching_sha2_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: sunshine
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ${VOLUME_ROOT}/mysql/data:/var/lib/mysql
+      - ${VOLUME_ROOT}/mysql/log:/var/log/mysql
+
+  sunshine:
+    container_name: sunshine
+    hostname: jboss
+    image: sunshine:latest
+    restart: always
+    environment:
+      MYSQL_HOST: mysql
+    ports:
+      - 8787:8787
+      - 8080:8080
+      - 3300:3300
+    depends_on:
+      - mysql
+    volumes:
+      - ${VOLUME_ROOT}/sunshine-logs:/opt/logs
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    depends_on:
+      - sunshine
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ${VOLUME_ROOT}/prometheus:/etc/prometheus
+      - ${VOLUME_ROOT}/prom_data:/prometheus
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ${VOLUME_ROOT}/grafana:/etc/grafana/provisioning/datasources
