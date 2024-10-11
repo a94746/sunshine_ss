@@ -5,7 +5,6 @@ import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.scheduling.service.SchService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ public class DailyMatchTimer {
 
     private LocationRepo locationRepo;
     private SchService schService;
-    private ApplicationEventPublisher eventPublisher;
 
     @Scheduled(fixedRate = INTERVAL_MIN, timeUnit = TimeUnit.MINUTES)
     public void timer() {

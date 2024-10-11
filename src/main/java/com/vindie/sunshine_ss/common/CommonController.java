@@ -4,11 +4,11 @@ import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.repo.CreadRepo;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.email.EmailService;
+import com.vindie.sunshine_ss.common.service.AbstractController;
 import com.vindie.sunshine_ss.common.service.CommonService;
-import com.vindie.sunshine_ss.common.service.PropService;
+import com.vindie.sunshine_ss.common.service.PropertiesService;
 import com.vindie.sunshine_ss.common.service.VersionUtils;
 import com.vindie.sunshine_ss.security.service.AuthenticationService;
-import com.vindie.sunshine_ss.security.service.CurUserService;
 import com.vindie.sunshine_ss.security.service.JwtService;
 import com.vindie.sunshine_ss.ui_dto.UiLocation;
 import com.vindie.sunshine_ss.ui_dto.UiLoginOpeningDialog;
@@ -26,14 +26,14 @@ import java.util.List;
 @Slf4j
 @RestController
 @AllArgsConstructor
-public class CommonController {
+public class CommonController extends AbstractController {
     private AccountRepo accountRepo;
     private CreadRepo creadRepo;
     private VersionUtils versionUtils;
     private EmailService emailService;
     private AuthenticationService authenticationService;
     private CommonService commonService;
-    private PropService propService;
+    private PropertiesService properties;
     private JwtService jwtService;
 
     @GetMapping("/before_auth/check_unique_email")
@@ -53,7 +53,7 @@ public class CommonController {
 
     @GetMapping("/common/login_opening_dialogs")
     public List<UiLoginOpeningDialog> getLoginOpeningDialogs() {
-        return commonService.gerUiLoginOpeningDialogs(CurUserService.get());
+        return commonService.gerUiLoginOpeningDialogs(getCurrentUserId());
     }
 
     @GetMapping("/before_auth/send_email_code")
@@ -79,17 +79,17 @@ public class CommonController {
 
     @GetMapping("/common/last_scheduling")
     public LocalDateTime getLastScheduling() {
-        return commonService.getLastScheduling(CurUserService.get());
+        return commonService.getLastScheduling(getCurrentUser());
     }
 
     @GetMapping("/common/test")
     public String test() {
-        return "Hello sunshine! " + CurUserService.get().getName();
+        return "Hello sunshine! " + getCurrentUser().getName();
     }
 
     @GetMapping("/before_auth/common/test")
     public void test2() {
-        if (propService.devNow) {
+        if (properties.isTestMode) {
             String email = creadRepo.findAll().get(0).getEmail();
             log.info("{}. Bearer {}", email, jwtService.generateToken(accountRepo.findUserByEmail(email).get()));
         }
@@ -97,6 +97,6 @@ public class CommonController {
 
     @PostMapping("/common/logout_easy")
     public void logout() {
-        authenticationService.logout(CurUserService.get());
+        authenticationService.logout(getCurrentUserId());
     }
 }

@@ -33,19 +33,7 @@ public class SchParser {
         return accs2avoidMatches.entrySet().stream()
                 .filter(e -> ChronoUnit.HOURS.between(e.getKey().getLastPresence(), LocalDateTime.now())
                         <= Math.max(LAST_PRESENCE_LIMIT_HOURS, LAST_PRESENCE_LIMIT_HOURS_PREM))
-                .map(e -> new SchAccount(
-                        e.getKey().getId(),
-                        Math.toIntExact(ChronoUnit.HOURS.between(e.getKey().getLastPresence(), LocalDateTime.now())),
-                        Math.toIntExact(ChronoUnit.YEARS.between(e.getKey().getBday(), LocalDate.now())),
-                        e.getKey().getGender(),
-                        e.getKey().getRating().floatValue(),
-                        e.getValue(),
-                        AccountService.isPrem(e.getKey()) ? e.getKey().getPremMatchesNum() : e.getKey().getMatchesNum(),
-                        AccountService.isPrem(e.getKey()),
-                        parseGenders2relations(e.getKey().getFilter().getRelationsWithGenders()),
-                        e.getKey().getFilter().getChatPrefs(),
-                        e.getKey().getFilter().getAgeFrom(),
-                        e.getKey().getFilter().getAgeTo()))
+                .map(SchParser::toSchAccount)
                 .toList();
     }
 
@@ -54,5 +42,21 @@ public class SchParser {
         input.forEach(r2g -> r2g.getGenders()
                         .forEach(g -> result.computeIfAbsent(g, ignore -> new HashSet<>()).add(r2g.getRelation())));
         return result;
+    }
+
+    private static SchAccount toSchAccount(Map.Entry<Account, Collection<Long>> e) {
+        return new SchAccount(
+                e.getKey().getId(),
+                Math.toIntExact(ChronoUnit.HOURS.between(e.getKey().getLastPresence(), LocalDateTime.now())),
+                Math.toIntExact(ChronoUnit.YEARS.between(e.getKey().getBday(), LocalDate.now())),
+                e.getKey().getGender(),
+                e.getKey().getRating().floatValue(),
+                e.getValue(),
+                AccountService.isPrem(e.getKey()) ? e.getKey().getPremMatchesNum() : e.getKey().getMatchesNum(),
+                AccountService.isPrem(e.getKey()),
+                parseGenders2relations(e.getKey().getFilter().getRelationsWithGenders()),
+                e.getKey().getFilter().getChatPrefs(),
+                e.getKey().getFilter().getAgeFrom(),
+                e.getKey().getFilter().getAgeTo());
     }
 }

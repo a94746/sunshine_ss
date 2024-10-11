@@ -17,13 +17,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class MetricService {
     private static final String LOCATION = "location_id";
-
     private final MeterRegistry registry;
     private final Map<Long, AtomicDouble> schedulingTimeSec = new ConcurrentHashMap<>();
     private final Map<Long, AtomicInteger> peopleNum = new ConcurrentHashMap<>();
     private final Map<Long, AtomicDouble> peoplePercentHaveMatches = new ConcurrentHashMap<>();
     private final Map<Long, AtomicDouble> numOfMatchesPerPerson = new ConcurrentHashMap<>();
-
 
     public void setSchedulingTimeSec(Long locationId, Double value) {
         schedulingTimeSec.computeIfAbsent(locationId,

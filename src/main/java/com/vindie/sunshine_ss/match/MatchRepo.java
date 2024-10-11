@@ -57,10 +57,4 @@ public interface MatchRepo extends JpaRepository<Match, Long> {
             "WHERE m.pairId = :pairId " +
             "AND m.id != :thisId")
     Match getAnother(String pairId, Long thisId);
-
-    @Query("SELECT m FROM Match m " +
-            "LEFT JOIN FETCH m.owner " +
-            "LEFT JOIN FETCH m.partner " +
-            "WHERE m.owner.id IN (:ownerIds)")
-    List<Match> findAllByOwnerIds(List<Long> ownerIds);
 }

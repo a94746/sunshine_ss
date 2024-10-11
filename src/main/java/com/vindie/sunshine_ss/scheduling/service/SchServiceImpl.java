@@ -44,8 +44,7 @@ public class SchServiceImpl implements SchService {
     public void runSch(Location location) {
         Instant start = Instant.now();
         LocalTime timeThere = LocalTime.now().plusHours(location.getTimeShift());
-        log.info("Start runSch for: {}. Time there: {}:{}",
-                location.getName(), timeThere.getHour(), timeThere.getMinute());
+        log.info("Start runSch for: {}. Time there: {}:{}", location.getName(), timeThere.getHour(), timeThere.getMinute());
         location.setLastScheduling(LocalDateTime.now());
         locationRepo.save(location);
 

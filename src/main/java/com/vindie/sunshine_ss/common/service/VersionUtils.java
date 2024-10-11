@@ -13,18 +13,15 @@ public class VersionUtils {
     public static final String ANDROID_POSTFIX = "a";
     public static final String IOS_POSTFIX = "i";
 
-    private final PropService propService;
+    private final PropertiesService properties;
 
     public boolean isRelevantVersion(String versionOs) {
         final String os = getPostfix(versionOs);
 
         final String relevantVersionNum = switch (os) {
-            case ANDROID_POSTFIX -> propService.androidLeastVersion;
-            case IOS_POSTFIX -> propService.iosLeastVersion;
-            default -> {
-                log.error("Unknown os app version {}", versionOs);
-                throw new IllegalArgumentException("Unknown os app version " + versionOs);
-            }
+            case ANDROID_POSTFIX -> properties.androidLeastVersion;
+            case IOS_POSTFIX -> properties.iosLeastVersion;
+            default -> throw new IllegalArgumentException("Unknown os app version " + versionOs);
         };
         return isRelevantVersion(getWithoutPostfix(versionOs), getWithoutPostfix(relevantVersionNum));
     }
@@ -33,11 +30,9 @@ public class VersionUtils {
         final String[] version = versionNum.split("\\.");
         final String[] relevantVersion = relevantVersionNum.split("\\.");
 
-        if (version.length != relevantVersion.length) {
-            log.error("Unknown length of app version: {}, relevantVersion: {}", versionNum, relevantVersionNum);
+        if (version.length != relevantVersion.length)
             throw new IllegalArgumentException(
                     "Unknown length of app version: " + versionNum + ", relevantVersion: " + relevantVersionNum);
-        }
 
         for (int i = 0; i < version.length; i++) {
             if (parseInt(version[i]) < parseInt(relevantVersion[i]))

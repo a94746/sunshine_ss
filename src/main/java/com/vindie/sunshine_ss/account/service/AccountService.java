@@ -8,7 +8,8 @@ import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
 import com.vindie.sunshine_ss.common.dto.UiKey;
-import com.vindie.sunshine_ss.common.service.PropService;
+import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
+import com.vindie.sunshine_ss.common.service.PropertiesService;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.match.MatchService;
@@ -42,34 +43,32 @@ public class AccountService {
     private CreadService creadService;
     private DeviceService deviceService;
     private MatchService matchService;
-    private PropService propService;
+    private PropertiesService properties;
     private LocationRepo locationRepo;
 
-    @Transactional
-    public UiKey editMy(UiMyAccount ui, User user) {
-        UiKey result = null;
+    @Transactional(noRollbackFor = SunshineException.class)
+    public void editMy(UiMyAccount ui, User user) {
         var acc = accountRepo.findById(user.getId()).orElseThrow();
         acc.setName(ui.getName().trim());
         acc.setDescription(ui.getDescription().trim());
 
         if (!acc.getBday().isEqual(ui.getBday())) {
-            if (acc.getBdayLastChange().isBefore(LocalDate.now().minus(propService.bdayLastChange))) {
+            if (acc.getBdayLastChange().isBefore(LocalDate.now().minus(properties.allowedFrequencyOfBdayChange))) {
                 acc.setBday(ui.getBday());
                 acc.setBdayLastChange(LocalDate.now());
             } else {
-                result = UiKey.CANT_CHANGE_BDAY_SO_OFTEN;
+                throw new SunshineException(UiKey.CANT_CHANGE_BDAY_SO_OFTEN);
             }
         }
         if (!acc.getLocation().getId().equals(ui.getLocationId())) {
-            if (acc.getLocationLastChange().isBefore(LocalDateTime.now().minus(propService.locationLastChange))) {
+            if (acc.getLocationLastChange().isBefore(LocalDateTime.now().minus(properties.locationLastChange))) {
                 acc.setLocation(locationRepo.getReferenceById(ui.getLocationId()));
                 acc.setLocationLastChange(LocalDateTime.now());
             } else {
-                result = UiKey.CANT_CHANGE_LOCATION_SO_OFTEN;
+                throw new SunshineException(UiKey.CANT_CHANGE_LOCATION_SO_OFTEN);
             }
         }
         accountRepo.save(acc);
-        return result;
     }
 
     public UiMyAccount getMyAccount(User user) {
@@ -132,8 +131,8 @@ public class AccountService {
     }
 
     @Transactional
-    public void fakeDelete(Long id) {
-        accountRepo.fakeDelete(id);
+    public void softDelete(Long id) {
+        accountRepo.softDelete(id);
     }
 
     public List<Account> findForScheduling(Long locationId) {

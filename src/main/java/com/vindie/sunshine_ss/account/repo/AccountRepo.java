@@ -39,7 +39,7 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     @Query("UPDATE Account a " +
             "SET a.deleted = true " +
             "WHERE a.id = :id")
-    void fakeDelete(Long id);
+    void softDelete(Long id);
 
     @Modifying
     @Query("UPDATE Account a " +
@@ -52,6 +52,12 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
             "SET a.likes = a.likes + 1 " +
             "WHERE a.id IN (:ids)")
     void incrementLikes(Collection<Long> ids);
+
+    @Modifying
+    @Query("UPDATE Account a " +
+            "SET a.likes = a.likes + 1 " +
+            "WHERE a.id = id")
+    void incrementLikes(Long id);
 
     @Query("SELECT a FROM Account a " +
             "LEFT JOIN FETCH a.matchesOwner " +

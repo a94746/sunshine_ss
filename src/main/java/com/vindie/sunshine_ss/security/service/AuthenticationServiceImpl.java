@@ -119,7 +119,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public void logout(User user) {
-        deviceRepo.logoutDevicesByOwnerId(user.getId());
+    public void logout(Long userId) {
+        deviceRepo.logoutDevicesByOwnerId(userId);
     }
 }

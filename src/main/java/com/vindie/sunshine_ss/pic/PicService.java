@@ -22,8 +22,7 @@ public class PicService {
     public UiPicInfo create(UiPic uiPic, User user) {
         var pic = new Pic();
         pic.setFile(uiPic.getFile());
-        var account = accountRepo.getReferenceById(user.getId());
-        pic.setOwner(account);
+        pic.setOwner(accountRepo.getReferenceById(user.getId()));
 
         var saved = picRepo.save(pic);
         return UiPicInfo.builder()
@@ -35,17 +34,13 @@ public class PicService {
     public List<UiPic> get(List<Long> ids, User user) {
         return picRepo.findAllByOwnerIdAndIdIn(user.getId(), ids)
                 .stream()
-                .map(p -> UiPic.builder()
-                        .id(p.getId())
-                        .file(p.getFile())
-                        .lastModified(p.getLastModified())
-                        .build())
+                .map(this::toUiPic)
                 .toList();
     }
 
     @Transactional
-    public void delete(Long id, User user) {
-        picRepo.deleteByIdAndOwnerId(id, user.getId());
+    public void delete(Long id, Long userId) {
+        picRepo.deleteByIdAndOwnerId(id, userId);
     }
 
     public List<UiPicInfo> getPicInfosByOwnerId(Long ownerId) {
@@ -61,5 +56,13 @@ public class PicService {
 
     public Pic saveRepo(Pic pic) {
         return picRepo.save(pic);
+    }
+
+    private UiPic toUiPic(Pic pic) {
+        return UiPic.builder()
+                .id(pic.getId())
+                .file(pic.getFile())
+                .lastModified(pic.getLastModified())
+                .build();
     }
 }

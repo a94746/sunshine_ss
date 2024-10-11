@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class CommonService {
-    private final PropService propService;
+    private final PropertiesService properties;
     private final QueueElementRepo queueElementRepo;
     private final LocationRepo locationRepo;
     private final AccountRepo accountRepo;
@@ -46,15 +46,15 @@ public class CommonService {
 
     public UiSettings gerSettings() {
         var uiSettings = new UiSettings();
-        uiSettings.setPicCacheTTL(propService.uiPicCacheTTL);
-        uiSettings.setMatchesFrequency(propService.matchesFrequency);
+        uiSettings.setPicCacheTTL(properties.uiPicCacheTTL);
+        uiSettings.setMatchesFrequency(properties.matchesFrequency);
         return uiSettings;
     }
 
     @Transactional
-    public List<UiLoginOpeningDialog> gerUiLoginOpeningDialogs(User user) {
-        var notifs = queueElementRepo.findOpeningDialogsByOwner(user.getId());
-        queueElementRepo.deleteOpeningDialogsByOwner(user.getId());
+    public List<UiLoginOpeningDialog> gerUiLoginOpeningDialogs(Long userId) {
+        var notifs = queueElementRepo.findOpeningDialogsByOwner(userId);
+        queueElementRepo.deleteOpeningDialogsByOwner(userId);
         return notifs;
     }
 }

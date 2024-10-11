@@ -132,7 +132,7 @@ class CommonControllerTest extends WithMvcAndSocket {
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
                 .andExpect(status().isOk())
                 .andExpect(modelMatches(UiSettings.class, s -> {
-                    assertEquals(propService.uiPicCacheTTL, s.getPicCacheTTL());
+                    assertEquals(properties.uiPicCacheTTL, s.getPicCacheTTL());
                 }));
     }
 
@@ -200,6 +200,6 @@ class CommonControllerTest extends WithMvcAndSocket {
     }
 
     private String getRandomVersionOs() {
-        return getRandomElement(List.of(propService.androidLeastVersion, propService.iosLeastVersion));
+        return getRandomElement(List.of(properties.androidLeastVersion, properties.iosLeastVersion));
     }
 }

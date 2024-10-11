@@ -1,5 +1,6 @@
 package com.vindie.sunshine_ss.common.timers.queue;
 
+import com.vindie.sunshine_ss.common.service.PropertiesService;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.repo.EventLineRepo;
 import com.vindie.sunshine_ss.queue.repo.QueueElementRepo;
@@ -21,16 +22,16 @@ import static java.lang.Boolean.TRUE;
 public class QueueCleanerTimer {
 
     public static final int INTERVAL_HOURS = 5;
-    public static final int TTL_DAYS = 10;
 
     private QueueElementRepo queueElementRepo;
     private EventLineRepo eventLineRepo;
+    private PropertiesService properties;
 
     @Transactional
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
         log.info("Start QueueCleanerTimer");
-        LocalDate older = LocalDate.now().minusDays(TTL_DAYS);
+        LocalDate older = LocalDate.now().minus(properties.queueTTL);
         queueElementRepo.deleteOlder(older);
 
         List<EventLine> eventLines = eventLineRepo.findAll()

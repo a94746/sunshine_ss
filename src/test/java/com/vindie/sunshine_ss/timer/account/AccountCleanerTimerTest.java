@@ -28,7 +28,7 @@ class AccountCleanerTimerTest extends WithData {
         queueParserTimer.timer();
         assertEquals(1, eventLineRepo.findAll().size());
 
-        account.setLastPresence(LocalDateTime.now().minusDays(AccountCleanerTimer.TTL_DAYS + 1));
+        account.setLastPresence(LocalDateTime.now().minus(properties.accountTTL.plusDays(1)));
         accountRepo.save(account);
         var devicesBefore = deviceRepo.findAllByOwnerId(account.getId());
         assertFalse(devicesBefore.isEmpty());
