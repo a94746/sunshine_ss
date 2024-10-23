@@ -1,14 +1,17 @@
 package com.vindie.sunshine_ss.scheduling.service;
 
 import com.vindie.sunshine_ss.location.Location;
-import com.vindie.sunshine_ss.scheduling.dto.SchAccount;
+import com.vindie.sunshine_ss.scheduling.dto.ScheduleInfo;
 
-import java.util.Collection;
 import java.util.Map;
 
 public interface SchService {
 
-    public Map<Long, Map<Long, String>> calculate(Collection<SchAccount> accounts);
+    void runSch(Location location);
 
-    public void runSch(Location location);
+    Map<String, ScheduleInfo> getStartedSchedules();
+
+    void saveSchResult(String uuid);
+
+    void processErrorSchResult(String uuid);
 }

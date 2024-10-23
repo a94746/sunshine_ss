@@ -14,27 +14,65 @@ services:
       - ${VOLUME_ROOT}/mysql/data:/var/lib/mysql
       - ${VOLUME_ROOT}/mysql/log:/var/log/mysql
 
-  sunshine:
-    container_name: sunshine
+  sunshine_ss:
+    container_name: sunshine_ss
     hostname: jboss
-    image: sunshine:latest
+    image: sunshine_ss:latest
     restart: always
     environment:
       MYSQL_HOST: mysql
+      APP_IS_TEST_MODE: false
     ports:
       - 8787:8787
       - 8080:8080
       - 3300:3300
     depends_on:
       - mysql
+      - kafka
     volumes:
-      - ${VOLUME_ROOT}/sunshine-logs:/opt/logs
+      - ${VOLUME_ROOT}/sunshine_ss-logs:/opt/logs
+
+  sunshine_sch:
+    container_name: sunshine_sch
+    hostname: jboss
+    image: sunshine_sch:latest
+    restart: always
+    ports:
+      - 9787:8787
+    depends_on:
+      - mysql
+      - kafka
+    volumes:
+      - ${VOLUME_ROOT}/sunshine_sch-logs:/opt/logs
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     depends_on:
-      - sunshine
+      - sunshine_ss
+      - sunshine_sch
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:

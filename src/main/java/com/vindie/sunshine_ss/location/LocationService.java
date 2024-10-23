@@ -10,4 +10,11 @@ import org.springframework.stereotype.Service;
 public class LocationService {
     private LocationRepo locationRepo;
 
+    public void save(Location location) {
+        locationRepo.save(location);
+    }
+
+    public Location findById(Long id) {
+        return locationRepo.findById(id).orElseThrow();
+    }
 }

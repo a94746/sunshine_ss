@@ -1,30 +1,33 @@
 package com.vindie.sunshine_ss.scheduling.service;
 
 import com.vindie.sunshine_ss.account.dto.Account;
-import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.service.AccountService;
 import com.vindie.sunshine_ss.common.metrics.MetricService;
 import com.vindie.sunshine_ss.common.record.event.ss.DailyMatchesSsEvent;
 import com.vindie.sunshine_ss.location.Location;
-import com.vindie.sunshine_ss.location.LocationRepo;
+import com.vindie.sunshine_ss.location.LocationService;
 import com.vindie.sunshine_ss.match.Match;
-import com.vindie.sunshine_ss.match.MatchRepo;
 import com.vindie.sunshine_ss.match.MatchService;
-import com.vindie.sunshine_ss.scheduling.dto.SchAccount;
-import com.vindie.sunshine_ss.scheduling.rules.Flow;
-import com.vindie.sunshine_ss.scheduling.rules.SmalRules;
+import com.vindie.sunshine_ss.scheduling.dto.SchRequest;
+import com.vindie.sunshine_ss.scheduling.dto.SchResult;
+import com.vindie.sunshine_ss.scheduling.dto.ScheduleInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,94 +35,112 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SchServiceImpl implements SchService {
     private AccountService accountService;
-    private MatchRepo matchRepo;
-    private LocationRepo locationRepo;
-    private AccountRepo accountRepo;
+    private MatchService matchService;
+    private LocationService locationService;
     private ApplicationEventPublisher eventPublisher;
     private MetricService metricService;
+    private RemoteSchService remoteSchService;
+    private SchParser schParser;
+
+    private static Map<String, ScheduleInfo> startedSchedules = new ConcurrentHashMap();
 
     @Override
     @Async
     @Transactional
     public void runSch(Location location) {
-        Instant start = Instant.now();
-        LocalTime timeThere = LocalTime.now().plusHours(location.getTimeShift());
-        log.info("Start runSch for: {}. Time there: {}:{}", location.getName(), timeThere.getHour(), timeThere.getMinute());
-        location.setLastScheduling(LocalDateTime.now());
-        locationRepo.save(location);
+        try {
+            if (!SchLockByLocation.tryLock(location.getId())) {
+                log.warn("Location {} is locked for sch", location.getName());
+                return;
+            }
+            LocalDateTime now = LocalDateTime.now();
+            log.info("Start runSch for: {}. Time: {}", location.getName(), now);
 
-        List<Account> accs = accountService.findForScheduling(location.getId());
-        Map<Long, Account> ids2accs = accs.stream()
-                .collect(Collectors.toMap(Account::getId, a -> a));
-        Map<Account, Collection<Long>> accs2avoidMatches = new HashMap<>();
-        accs.forEach(a -> {
-            List<Long> avoidMatches = a.getMatchesOwner().stream()
-                    .map(Match::getPartner)
-                    .map(Account::getId)
-                    .distinct()
-                    .toList();
-            accs2avoidMatches.put(a, avoidMatches);
-        });
-        Collection<SchAccount> parseToResult = SchParser.parseTo(accs2avoidMatches);
-        Map<Long, Map<Long, String>> schResult = calculate(parseToResult);
-        List<Match> mathes = SchParser.parseFrom(schResult)
-                .stream()
-                .map(triple -> {
-                    Match match = MatchService.createCorrect();
-                    match.setOwner(ids2accs.get(triple.getFirst()));
-                    match.setPartner(ids2accs.get(triple.getSecond()));
-                    match.setPairId(triple.getThird());
-                    return match;
-                })
-                .toList();
-        DailyMatchesSsEvent event = new DailyMatchesSsEvent(schResult.keySet());
-        eventPublisher.publishEvent(event);
-        matchRepo.saveAll(mathes);
-        accountRepo.incrementViews(schResult.keySet());
+            List<Account> accounts = accountService.findForScheduling(location.getId());
+            Map<Account, Collection<Long>> accounts2avoidMatches = schParser.getAvoidMatches(accounts);
 
-
-        Double durationSec = Duration.between(start, Instant.now()).getNano() * 0.000000001D;
-        log.info("End   runSch for: {} in {} sec", location.getName(), durationSec);
-        int peopleNum = accountRepo.countByLocationId(location.getId());
-        metricService.setPeopleNum(location.getId(), peopleNum);
-        metricService.setPeoplePercentHaveMatches(location.getId(), peopleNum == 0 ? 0 : ((schResult.size() * 100D) / peopleNum));
-        double avgMatches = schResult.values().stream()
-                .mapToInt(Map::size)
-                .average()
-                .orElse(0);
-        metricService.setNumOfMatchesPerPerson(location.getId(), avgMatches);
-        metricService.setSchedulingTimeSec(location.getId(), durationSec);
+            SchRequest schRequest = schParser.getSchRequest(accounts2avoidMatches);
+            String uuid = remoteSchService.startCalculation(schRequest);
+            log.info("Started uuid = {}", uuid);
+            startedSchedules.put(uuid, new ScheduleInfo(location.getId(), now));
+        } catch (Exception e){
+            SchLockByLocation.unlock(location.getId());
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public Map<Long, Map<Long, String>> calculate(Collection<SchAccount> accounts) {
-        for (SchAccount theAccount : accounts) {
-            for (SchAccount acc : accounts) {
-                if (Flow.FIRST.test(theAccount, acc)) {
-                    addMatchEachOther(theAccount, acc);
-                    if (SmalRules.ONE_ENOUGH_MATCHES.test(theAccount)) break;
-                }
-            }
+    public Map<String, ScheduleInfo> getStartedSchedules() {
+        return startedSchedules;
+    }
+
+    @Transactional
+    @Override
+    public void saveSchResult(String uuid) {
+        ScheduleInfo scheduleInfo = startedSchedules.get(uuid);
+        if (scheduleInfo == null) {
+            log.warn("Received deleted or unknown uuid = {}", uuid);
+            return;
         }
-        return accounts.stream()
-                .collect(Collectors.toMap(SchAccount::getId, SchAccount::getResultMatches));
+        Location location = locationService.findById(scheduleInfo.getLocationId());
+        try {
+            location.setLastScheduling(LocalDateTime.now());
+            locationService.save(location);
+
+            SchResult schResult = remoteSchService.getCalculation(uuid);
+            Collection<Match> matches = schParser.toMatches(schResult.getMatches());
+            Set<Long> succeedAccountIds = schParser.getSucceedAccountIds(schResult.getMatches());
+
+            matchService.saveAll(matches);
+            accountService.incrementViews(succeedAccountIds);
+
+            double durationSec = Duration.between(scheduleInfo.getStartTime(), Instant.now()).getNano() * 0.000000001D;
+            log.info("End   runSch for: {} in {} sec", location.getName(), durationSec);
+
+            saveMetrics(schResult, location.getId(), durationSec);
+            sendDailyMatchesSsEvent(succeedAccountIds);
+        } finally {
+            SchLockByLocation.unlock(location.getId());
+            startedSchedules.remove(uuid);
+        }
     }
 
-    public void addMatchEachOther(SchAccount acc1, SchAccount acc2) {
-        String pairId = UUID.randomUUID().toString();
-        acc1.getResultMatches().put(acc2.getId(), pairId);
-        acc2.getResultMatches().put(acc1.getId(), pairId);
+    @Override
+    public void processErrorSchResult(String uuid) {
+        ScheduleInfo scheduleInfo = startedSchedules.remove(uuid);
+        if (scheduleInfo != null)
+            SchLockByLocation.unlock(scheduleInfo.getLocationId());
     }
 
-    private boolean forDebugOnly(SchAccount theAccount, SchAccount  acc) {
-        boolean b1 = SmalRules.TWO_NOT_ENOUGH_MATCHES.test(theAccount, acc);
-        boolean b2 = SmalRules.NOT_THE_SAME_ACC.test(theAccount, acc);
-        boolean b3 = SmalRules.NUT_IN_AVOID_MATCHES.test(theAccount, acc);
-        boolean b4 = SmalRules.TWO_SUITABLE_GENDER.test(theAccount, acc);
-        boolean b5 = SmalRules.TWO_SUITABLE_AGE.test(theAccount, acc);
-        boolean b6 = SmalRules.TWO_SUITABLE_LAST_PRESENCE.test(theAccount, acc);
-        boolean b7 = SmalRules.TWO_SUITABLE_RAITING.test(theAccount, acc);
-        return b1 && b2 && b3 && b4 && b5 && b6 && b7;
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+    public void timer() {
+        var now = LocalDateTime.now();
+        startedSchedules.entrySet().stream()
+                .filter(e -> e.getValue().getLastUpdate().plusHours(1).isBefore(now))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet())
+                .forEach(uuid -> {
+                    log.warn("Deleted uuid = {}", uuid);
+                    ScheduleInfo scheduleInfo = startedSchedules.remove(uuid);
+                    if (scheduleInfo != null)
+                        SchLockByLocation.unlock(scheduleInfo.getLocationId());
+                });
+    }
+
+    private void sendDailyMatchesSsEvent(Set<Long> accountIds) {
+        DailyMatchesSsEvent event = new DailyMatchesSsEvent(accountIds);
+        eventPublisher.publishEvent(event);
+    }
+
+    private void saveMetrics(SchResult schResult, Long locationId, double durationSec) {
+        int peopleNum = accountService.countByLocationId(locationId);
+        metricService.setPeopleNum(locationId, peopleNum);
+        metricService.setPeoplePercentHaveMatches(locationId,
+                peopleNum == 0
+                        ? 0
+                        : ((schResult.getMatches().size() * 200D) / peopleNum));
+        metricService.setNumOfMatchesPerPerson(locationId, schResult.getMetrics().getAvgMatches());
+        metricService.setSchedulingTimeSec(locationId, durationSec);
     }
 
 }

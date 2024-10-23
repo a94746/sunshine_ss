@@ -1,46 +1,47 @@
 package com.vindie.sunshine_ss.scheduling.dto;
 
-import com.vindie.sunshine_ss.common.dto.ChatPref;
-import com.vindie.sunshine_ss.common.dto.Gender;
-import com.vindie.sunshine_ss.common.dto.Relation;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
 @Getter
+@Setter
+@NoArgsConstructor
 @EqualsAndHashCode
 public class SchAccount {
 
-    private final long id;
-    private final int lastPresenceHours;
-    private final int age;
-    private final Gender gender;
-    private final float rating;
+    private long id;
+    private int lastPresenceHours;
+    private int age;
+    private SchGender gender;
+    private float rating;
 
-    private final Collection<Long> avoidMatches;
-    private final byte matchNum;
-    private final boolean prem;
+    private Collection<Long> avoidMatches;
+    private byte matchNum;
+    private boolean prem;
 
-    private final Map<Gender, Set<Relation>> genders2relations;
-    private final Set<ChatPref> chatPrefs;
-    private final byte ageFrom;
-    private final byte ageTo;
+    private Map<SchGender, Set<SchRelation>> genders2relations;
+    private Set<SchChatPref> chatPrefs;
+    private byte ageFrom;
+    private byte ageTo;
 
     @EqualsAndHashCode.Exclude
-    private final Map<Long, String> resultMatches = new HashMap<>();
+    private final Set<Long> resultPartners = new HashSet<>();
 
     public SchAccount(long id,
                       int lastPresenceHours,
                       int age,
-                      Gender gender,
+                      SchGender gender,
                       float rating,
                       Collection<Long> avoidMatches,
                       byte matchNum,
                       boolean prem,
-                      Map<Gender, Set<Relation>> genders2relations,
-                      Set<ChatPref> chatPrefs,
+                      Map<SchGender, Set<SchRelation>> genders2relations,
+                      Set<SchChatPref> chatPrefs,
                       byte ageFrom,
                       byte ageTo) {
         this.id = id;
@@ -62,7 +63,7 @@ public class SchAccount {
                 : new EnumMap<>(genders2relations);
 
         this.chatPrefs = CollectionUtils.isEmpty(chatPrefs)
-                ? EnumSet.noneOf(ChatPref.class)
+                ? EnumSet.noneOf(SchChatPref.class)
                 : EnumSet.copyOf(chatPrefs);
     }
 }

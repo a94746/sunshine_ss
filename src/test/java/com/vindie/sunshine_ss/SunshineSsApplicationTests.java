@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.javafaker.Faker;
 import com.vindie.sunshine_ss.common.email.EmailSenderService;
 import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.push_and_socket.kinda_socket.KindaSocketService;
 import com.vindie.sunshine_ss.push_and_socket.push.PushService;
 import com.vindie.sunshine_ss.utils.DatabaseCleaner;

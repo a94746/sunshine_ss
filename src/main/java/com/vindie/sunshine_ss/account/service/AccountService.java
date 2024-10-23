@@ -9,10 +9,9 @@ import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Relation;
 import com.vindie.sunshine_ss.common.dto.UiKey;
 import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
 import com.vindie.sunshine_ss.location.LocationRepo;
-import com.vindie.sunshine_ss.match.MatchService;
 import com.vindie.sunshine_ss.pic.PicService;
 import com.vindie.sunshine_ss.security.record.User;
 import com.vindie.sunshine_ss.ui_dto.UiContact;
@@ -39,10 +38,6 @@ public class AccountService {
     private PicService picService;
     private DeviceRepo deviceRepo;
     private CreadRepo creadRepo;
-    private ContactService contactService;
-    private CreadService creadService;
-    private DeviceService deviceService;
-    private MatchService matchService;
     private PropertiesService properties;
     private LocationRepo locationRepo;
 
@@ -137,6 +132,18 @@ public class AccountService {
 
     public List<Account> findForScheduling(Long locationId) {
         return accountRepo.findForScheduling(locationId);
+    }
+
+    public Account getReferenceById(Long accountId) {
+        return accountRepo.getReferenceById(accountId);
+    }
+
+    public int countByLocationId(Long locationId) {
+        return accountRepo.countByLocationId(locationId);
+    }
+
+    public void incrementViews(Collection<Long> ids) {
+        accountRepo.incrementViews(ids);
     }
 
     public static boolean isPrem(Account acc) {

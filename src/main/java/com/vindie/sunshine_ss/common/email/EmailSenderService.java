@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.common.email;
 
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;

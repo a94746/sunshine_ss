@@ -7,7 +7,7 @@ import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
 import com.vindie.sunshine_ss.common.record.event.ss.CoupleLikedMatchSsEvent;
 import com.vindie.sunshine_ss.common.record.event.ss.SingleLikedMatchSsEvent;
 import com.vindie.sunshine_ss.common.record.event.ss.SsEvent;
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.pic.PicService;
 import com.vindie.sunshine_ss.security.record.User;
 import com.vindie.sunshine_ss.ui_dto.UiContact;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -45,7 +46,7 @@ public class MatchService {
         var userMatch = getUserMatch(pairMatсh, user);
         var partnerMatch = getPartnerMatch(pairMatсh, user);
 
-        if (userMatch.getDate().isBefore(LocalDateTime.now().minus(properties.actualMatchesTTL)))
+        if (userMatch.getDate().isBefore(LocalDateTime.now().minus(properties.ttl.actualMatchesTTL)))
             throw new SunshineException(UiKey.MATCH_NOT_AT_ACTUAL);
 
         accountRepo.incrementLikes(partnerMatch.getOwner().getId());
@@ -74,7 +75,7 @@ public class MatchService {
     }
 
     public List<Match> getActualMatches(User user) {
-        return matchRepo.findAllByOwnerIdAndDateAfter(user.getId(), LocalDateTime.now().minus(properties.actualMatchesTTL));
+        return matchRepo.findAllByOwnerIdAndDateAfter(user.getId(), LocalDateTime.now().minus(properties.ttl.actualMatchesTTL));
     }
 
     public List<Match> getPair(String pairId) {
@@ -85,12 +86,16 @@ public class MatchService {
         return matchRepo.getAnother(pairId, thisMatchId);
     }
 
+    public void saveAll(Collection<Match> matches) {
+        matchRepo.saveAll(matches);
+    }
+
     public List<Match> getBothLikedActualMatches(User user) {
         var list = matchRepo.findAllLikedByPartnerIdAndDateAfter(user.getId(),
-                LocalDateTime.now().minus(properties.likedActualMatchesTTL));
+                LocalDateTime.now().minus(properties.ttl.likedActualMatchesTTL));
 
         return matchRepo.findAllLikedByOwnerIdAndDateAfter(user.getId(),
-                LocalDateTime.now().minus(properties.likedActualMatchesTTL))
+                LocalDateTime.now().minus(properties.ttl.likedActualMatchesTTL))
                 .stream()
                 .filter(m -> list.stream().anyMatch(m2 -> m.getPairId().equals(m2.getPairId())))
                 .toList();

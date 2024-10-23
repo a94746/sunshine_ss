@@ -2,7 +2,7 @@ package com.vindie.sunshine_ss.common.timers.account;
 
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.account.repo.DeviceRepo;
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,7 +27,7 @@ public class AccountCleanerTimer {
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
         log.info("Start AccountCleanerTimer");
-        LocalDateTime older = LocalDateTime.now().minus(properties.accountTTL);
+        LocalDateTime older = LocalDateTime.now().minus(properties.ttl.accountTTL);
         List<Long> ids = accountRepo.findOlder(older);
         var devices = deviceRepo.findAllByOwnerIdIn(ids);
         devices.forEach(d -> {

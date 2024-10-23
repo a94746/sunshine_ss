@@ -10,6 +10,7 @@ import com.vindie.sunshine_ss.common.dto.ChatPref;
 import com.vindie.sunshine_ss.common.dto.Gender;
 import com.vindie.sunshine_ss.common.dto.Language;
 import com.vindie.sunshine_ss.common.dto.Relation;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.filter.dto.Filter;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
 import com.vindie.sunshine_ss.location.Location;
@@ -38,6 +39,8 @@ public class DataUtils {
     public static int index = 0;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PropertiesService propertiesService;
 
     public Account newTypicalAccount(Location location, boolean filterNeeded) {
         return newTypicalAccount(RANDOM.nextInt(5), RANDOM.nextInt(7), RANDOM.nextInt(1) + 1, location, filterNeeded);
@@ -63,9 +66,9 @@ public class DataUtils {
         boolean prem = RANDOM.nextInt(10) < 3;
         Gender gender = getRandomElement(Gender.values());
         acc.setGender(gender);
-        acc.setMatchesNum(gender.getMatchesNum());
+        acc.setMatchesNum(propertiesService.genderMatchNum.getMatchMaxNum(gender, false));
         acc.setPremMatchesNum(prem
-                ? gender.getPremMatchesNum()
+                ? propertiesService.genderMatchNum.getMatchMaxNum(gender, true)
                 : null);
         acc.setPremTill(prem
                 ? LocalDateTime.now().plusHours(1)

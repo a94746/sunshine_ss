@@ -2,6 +2,7 @@ package com.vindie.sunshine_ss.common.service;
 
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.location.LocationRepo;
 import com.vindie.sunshine_ss.queue.repo.QueueElementRepo;
 import com.vindie.sunshine_ss.security.record.User;
@@ -46,7 +47,7 @@ public class CommonService {
 
     public UiSettings gerSettings() {
         var uiSettings = new UiSettings();
-        uiSettings.setPicCacheTTL(properties.uiPicCacheTTL);
+        uiSettings.setPicCacheTTL(properties.ttl.uiPicCacheTTL);
         uiSettings.setMatchesFrequency(properties.matchesFrequency);
         return uiSettings;
     }

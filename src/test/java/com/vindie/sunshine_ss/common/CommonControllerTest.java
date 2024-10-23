@@ -132,7 +132,7 @@ class CommonControllerTest extends WithMvcAndSocket {
                         .header(HttpHeaders.AUTHORIZATION, getJwtHeader()))
                 .andExpect(status().isOk())
                 .andExpect(modelMatches(UiSettings.class, s -> {
-                    assertEquals(properties.uiPicCacheTTL, s.getPicCacheTTL());
+                    assertEquals(properties.ttl.uiPicCacheTTL, s.getPicCacheTTL());
                 }));
     }
 

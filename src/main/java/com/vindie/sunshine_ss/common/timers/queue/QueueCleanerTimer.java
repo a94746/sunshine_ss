@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.common.timers.queue;
 
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.queue.dto.EventLine;
 import com.vindie.sunshine_ss.queue.repo.EventLineRepo;
 import com.vindie.sunshine_ss.queue.repo.QueueElementRepo;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +32,7 @@ public class QueueCleanerTimer {
     @Scheduled(fixedRate = INTERVAL_HOURS, timeUnit = TimeUnit.HOURS)
     public void timer() {
         log.info("Start QueueCleanerTimer");
-        LocalDate older = LocalDate.now().minus(properties.queueTTL);
+        LocalDate older = LocalDateTime.now().minus(properties.ttl.queueTTL).toLocalDate();
         queueElementRepo.deleteOlder(older);
 
         List<EventLine> eventLines = eventLineRepo.findAll()

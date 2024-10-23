@@ -10,7 +10,7 @@ import com.vindie.sunshine_ss.queue.dto.QueueElement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,13 +35,13 @@ class QueueCleanerTimerTest extends WithData {
         queueParserTimer.timer();
         List<QueueElement> queueElements = queueElementRepo.findAll();
         assertEquals(2, queueElements.size());
-        queueElements.get(0).setCreated(LocalDate.now().minus(properties.queueTTL.plusDays(1)));
+        queueElements.get(0).setCreated(LocalDateTime.now().minus(properties.ttl.queueTTL.plusDays(1)).toLocalDate());
         queueElementRepo.save(queueElements.get(0));
 
         queueCleanerTimer.timer();
         assertEquals(1, queueElementRepo.findAll().size());
         assertEquals(1, eventLineRepo.findAll().size());
-        queueElements.get(1).setCreated(LocalDate.now().minus(properties.queueTTL.plusDays(1)));
+        queueElements.get(1).setCreated(LocalDateTime.now().minus(properties.ttl.queueTTL.plusDays(1)).toLocalDate());
         queueElementRepo.save(queueElements.get(1));
 
         queueCleanerTimer.timer();

@@ -31,7 +31,7 @@ class MatchCleanerTimerTest extends WithData {
                 .filter(m -> m.getOwner().getId().equals(acc1.getId()) || m.getOwner().getId().equals(acc2.getId()))
                 .toList();
         assertEquals(2, matches.size());
-        matches.get(0).setDate(LocalDateTime.now().minus(properties.matchTTL.plusDays(1)));
+        matches.get(0).setDate(LocalDateTime.now().minus(properties.ttl.matchTTL.plusDays(1)));
         matchRepo.save(matches.get(0));
 
         matchCleanerTimer.timer();

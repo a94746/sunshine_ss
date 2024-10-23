@@ -28,7 +28,7 @@ class AccountPremCleanerTimerTest extends WithData {
         assertTrue(accountRepo.findById(acc2.getId()).isPresent());
         assertNull(accountRepo.findById(acc2.getId()).get().getPremMatchesNum());
         assertNull(accountRepo.findById(acc2.getId()).get().getPremTill());
-        assertEquals(accountRepo.findById(acc2.getId()).get().getGender().getMatchesNum(),
+        assertEquals(properties.genderMatchNum.getMatchMaxNum(accountRepo.findById(acc2.getId()).get().getGender(), false),
                 accountRepo.findById(acc2.getId()).get().getMatchesNum());
     }
 }

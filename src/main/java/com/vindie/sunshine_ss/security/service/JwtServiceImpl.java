@@ -1,11 +1,12 @@
 package com.vindie.sunshine_ss.security.service;
 
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@AllArgsConstructor
 public class JwtServiceImpl implements JwtService {
-    private static final long TOKEN_TTL_MILIS = 1000L * 60L * 60L * 24L;
-    @Value("${token.signing.key}")
-    private String jwtSigningKey;
+
+    private final PropertiesService properties;
+
     @Override
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -45,7 +47,7 @@ public class JwtServiceImpl implements JwtService {
         return Jwts.builder().setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_TTL_MILIS))
+                .setExpiration(new Date(System.currentTimeMillis() + properties.ttl.jwtTTL.toMillis()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -63,7 +65,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
+        byte[] keyBytes = Decoders.BASE64.decode(properties.jwtSigningKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

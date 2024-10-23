@@ -5,7 +5,7 @@ import com.vindie.sunshine_ss.account.service.ContactService;
 import com.vindie.sunshine_ss.common.dto.UiKey;
 import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
 import com.vindie.sunshine_ss.common.service.AbstractController;
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.ui_dto.UiContact;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

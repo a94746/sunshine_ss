@@ -3,7 +3,7 @@ package com.vindie.sunshine_ss.pic;
 import com.vindie.sunshine_ss.common.dto.UiKey;
 import com.vindie.sunshine_ss.common.dto.exception.SunshineException;
 import com.vindie.sunshine_ss.common.service.AbstractController;
-import com.vindie.sunshine_ss.common.service.PropertiesService;
+import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.ui_dto.UiPic;
 import com.vindie.sunshine_ss.ui_dto.UiPicInfo;
 import lombok.AllArgsConstructor;
