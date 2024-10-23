@@ -14,10 +14,10 @@ services:
       - ${VOLUME_ROOT}/mysql/data:/var/lib/mysql
       - ${VOLUME_ROOT}/mysql/log:/var/log/mysql
 
-  sunshine_ss:
-    container_name: sunshine_ss
+  sunshine-ss:
+    container_name: sunshine-ss
     hostname: jboss
-    image: sunshine_ss:latest
+    image: sunshine-ss:latest
     restart: always
     environment:
       MYSQL_HOST: mysql
@@ -26,24 +26,26 @@ services:
       - 8787:8787
       - 8080:8080
       - 3300:3300
+      - 9100:9100
     depends_on:
       - mysql
       - kafka
     volumes:
-      - ${VOLUME_ROOT}/sunshine_ss-logs:/opt/logs
+      - ${VOLUME_ROOT}/sunshine-ss-logs:/opt/logs
 
-  sunshine_sch:
-    container_name: sunshine_sch
+  sunshine-sch:
+    container_name: sunshine-sch
     hostname: jboss
-    image: sunshine_sch:latest
+    image: sunshine-sch:latest
     restart: always
     ports:
       - 9787:8787
+      - 9110:9110
     depends_on:
       - mysql
       - kafka
     volumes:
-      - ${VOLUME_ROOT}/sunshine_sch-logs:/opt/logs
+      - ${VOLUME_ROOT}/sunshine-sch-logs:/opt/logs
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
@@ -71,8 +73,8 @@ services:
     image: prom/prometheus
     container_name: prometheus
     depends_on:
-      - sunshine_ss
-      - sunshine_sch
+      - sunshine-ss
+      - sunshine-sch
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:

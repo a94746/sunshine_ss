@@ -15,7 +15,7 @@ public class SchResultListener {
 
     private SchService schService;
 
-    @KafkaListener(topics = KafkaConsumer.SCH_PROGRESS_TOPIC_NAME)
+    @KafkaListener(topics = KafkaConsumer.SCH_PROGRESS_TOPIC_NAME, groupId = "group1")
     void listener(SchProgress schProgress) {
         switch (schProgress.getStatus()) {
             case IN_PROGRESS -> Optional.ofNullable(schService.getStartedSchedules().get(schProgress.getUuid()))
