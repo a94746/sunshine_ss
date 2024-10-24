@@ -16,4 +16,6 @@
     <include file="changes/base/matches_table.xml" relativeToChangelogFile="true"/>
     <include file="changes/base/pics_table.xml" relativeToChangelogFile="true"/>
     <include file="changes/base/queue_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/accounts_table-indexes.xml" relativeToChangelogFile="true"/>
+    <include file="changes/base/matches_table-indexes.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

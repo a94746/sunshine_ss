@@ -1,6 +1,7 @@
 package com.vindie.sunshine_ss.push_and_socket.kinda_socket.conf;
 
 import com.corundumstudio.socketio.AuthorizationListener;
+import com.corundumstudio.socketio.AuthorizationResult;
 import com.corundumstudio.socketio.HandshakeData;
 import com.vindie.sunshine_ss.account.repo.AccountRepo;
 import com.vindie.sunshine_ss.security.record.User;
@@ -22,9 +23,11 @@ public class SocketIOAuth implements AuthorizationListener {
     private AccountRepo accountRepo;
 
     @Override
-    public boolean isAuthorized(HandshakeData data) {
-        User user = getUser(data.getHttpHeaders());
-        return user != null;
+    public AuthorizationResult getAuthorizationResult(HandshakeData handshakeData) {
+        User user = getUser(handshakeData.getHttpHeaders());
+        return user != null
+                ? AuthorizationResult.SUCCESSFUL_AUTHORIZATION
+                : AuthorizationResult.FAILED_AUTHORIZATION;
     }
 
     public User getUser(HttpHeaders headers) {
@@ -44,5 +47,4 @@ public class SocketIOAuth implements AuthorizationListener {
         }
         return user;
     }
-
 }

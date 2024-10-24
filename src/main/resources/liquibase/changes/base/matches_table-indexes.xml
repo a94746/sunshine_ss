@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Viktor Kazberov" id="matches_table-indexes.1">
+        <preConditions onFail="MARK_RAN" onFailMessage="This index does exist.">
+            <not>
+                <indexExists tableName="matches" indexName="date_index"/>
+            </not>
+        </preConditions>
+
+        <createIndex indexName="date_index" tableName="matches">
+            <column name="date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="Viktor Kazberov" id="matches_table-indexes.2">
+        <preConditions onFail="MARK_RAN" onFailMessage="This index does exist.">
+            <not>
+                <indexExists tableName="matches" indexName="pair_id_index"/>
+            </not>
+        </preConditions>
+
+        <createIndex indexName="pair_id_index" tableName="matches">
+            <column name="pair_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -16,12 +16,13 @@ services:
 
   sunshine-ss:
     container_name: sunshine-ss
-    hostname: jboss
+    hostname: sunshine-ss
     image: sunshine-ss:latest
     restart: always
     environment:
       MYSQL_HOST: mysql
       APP_IS_TEST_MODE: false
+      SPRING_AMQP_DESERIALIZATION_TRUST_ALL: true
     ports:
       - 8787:8787
       - 8080:8080
@@ -29,25 +30,38 @@ services:
       - 9100:9100
     depends_on:
       - mysql
-      - kafka
     volumes:
       - ${VOLUME_ROOT}/sunshine-ss-logs:/opt/logs
 
   sunshine-sch:
     container_name: sunshine-sch
-    hostname: jboss
+    hostname: sunshine-sch
     image: sunshine-sch:latest
     restart: always
     ports:
       - 9787:8787
       - 9110:9110
+      - 8081:8080
     depends_on:
       - mysql
-      - kafka
     volumes:
       - ${VOLUME_ROOT}/sunshine-sch-logs:/opt/logs
 
-
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: always
+    environment:
+      TZ: Europe/Moscow
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: 1234
+      RABBITMQ_DEFAULT_VHOST: vhost
+    volumes:
+      - ${VOLUME_ROOT}/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   prometheus:
     image: prom/prometheus

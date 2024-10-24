@@ -1,7 +1,7 @@
 package com.vindie.sunshine_ss.common.service.properties;
 
+import com.vindie.sunshine_scheduler_dto.SchGender;
 import com.vindie.sunshine_ss.common.dto.Gender;
-import com.vindie.sunshine_ss.scheduling.dto.SchGender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
