@@ -1,9 +1,7 @@
 package com.vindie.sunshine_ss.scheduling.service;
 
 import com.vindie.sunshine_ss.common.config.KafkaConsumer;
-import com.vindie.sunshine_ss.scheduling.dto.SchProgress;
 import lombok.AllArgsConstructor;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

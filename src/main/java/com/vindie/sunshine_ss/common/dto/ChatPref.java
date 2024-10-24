@@ -1,6 +1,6 @@
 package com.vindie.sunshine_ss.common.dto;
 
-import com.vindie.sunshine_ss.scheduling.dto.SchChatPref;
+import com.vindie.sunshine_scheduler_dto.SchChatPref;
 
 public enum ChatPref {
     LIFE,

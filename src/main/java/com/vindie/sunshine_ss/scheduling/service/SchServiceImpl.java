@@ -1,5 +1,7 @@
 package com.vindie.sunshine_ss.scheduling.service;
 
+import com.vindie.sunshine_scheduler_dto.SchRequest;
+import com.vindie.sunshine_scheduler_dto.SchResult;
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.service.AccountService;
 import com.vindie.sunshine_ss.common.metrics.MetricService;
@@ -8,8 +10,6 @@ import com.vindie.sunshine_ss.location.Location;
 import com.vindie.sunshine_ss.location.LocationService;
 import com.vindie.sunshine_ss.match.Match;
 import com.vindie.sunshine_ss.match.MatchService;
-import com.vindie.sunshine_ss.scheduling.dto.SchRequest;
-import com.vindie.sunshine_ss.scheduling.dto.SchResult;
 import com.vindie.sunshine_ss.scheduling.dto.ScheduleInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

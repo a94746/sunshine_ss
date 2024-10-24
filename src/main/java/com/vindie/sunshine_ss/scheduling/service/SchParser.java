@@ -1,5 +1,6 @@
 package com.vindie.sunshine_ss.scheduling.service;
 
+import com.vindie.sunshine_scheduler_dto.*;
 import com.vindie.sunshine_ss.account.dto.Account;
 import com.vindie.sunshine_ss.account.service.AccountService;
 import com.vindie.sunshine_ss.common.dto.ChatPref;
@@ -7,7 +8,6 @@ import com.vindie.sunshine_ss.common.service.properties.PropertiesService;
 import com.vindie.sunshine_ss.filter.dto.RelationWithGenders;
 import com.vindie.sunshine_ss.match.Match;
 import com.vindie.sunshine_ss.match.MatchService;
-import com.vindie.sunshine_ss.scheduling.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

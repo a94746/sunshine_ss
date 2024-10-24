@@ -1,7 +1,6 @@
 package com.vindie.sunshine_ss.common.config;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.vindie.sunshine_ss.scheduling.dto.SchProgress;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;

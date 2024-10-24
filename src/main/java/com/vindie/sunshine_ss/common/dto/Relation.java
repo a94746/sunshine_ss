@@ -1,7 +1,6 @@
 package com.vindie.sunshine_ss.common.dto;
 
-
-import com.vindie.sunshine_ss.scheduling.dto.SchRelation;
+import com.vindie.sunshine_scheduler_dto.SchRelation;
 
 public enum Relation {
     LONG_LOVE,
