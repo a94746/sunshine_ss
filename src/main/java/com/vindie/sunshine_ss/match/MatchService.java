@@ -42,9 +42,9 @@ public class MatchService {
 
     @Transactional
     public boolean like(UiLike uiLike, User user) {
-        var pairMatсh = getPair(uiLike.getPairId());
-        var userMatch = getUserMatch(pairMatсh, user);
-        var partnerMatch = getPartnerMatch(pairMatсh, user);
+        var pairMatch = getPair(uiLike.getPairId());
+        var userMatch = getUserMatch(pairMatch, user);
+        var partnerMatch = getPartnerMatch(pairMatch, user);
 
         if (userMatch.getDate().isBefore(LocalDateTime.now().minus(properties.ttl.actualMatchesTTL)))
             throw new SunshineException(UiKey.MATCH_NOT_AT_ACTUAL);
@@ -75,7 +75,7 @@ public class MatchService {
     }
 
     public List<Match> getActualMatches(User user) {
-        return matchRepo.findAllByOwnerIdAndDateAfter(user.getId(), LocalDateTime.now().minus(properties.ttl.actualMatchesTTL));
+        return matchRepo.findAllByOwnerIdAndDateAfterAndNotLiked(user.getId(), LocalDateTime.now().minus(properties.ttl.actualMatchesTTL));
     }
 
     public List<Match> getPair(String pairId) {
@@ -124,6 +124,7 @@ public class MatchService {
     private UiLikedMatch toUiLikedMatch(Match match, User user) {
         var partner = match.getPartner();
         UiLikedMatch ui = new UiLikedMatch();
+        ui.setId(match.getId());
         ui.setName(partner.getName());
         ui.setAge(Period.between(partner.getBday(), LocalDate.now()).getYears());
         ui.setDescription(partner.getDescription());

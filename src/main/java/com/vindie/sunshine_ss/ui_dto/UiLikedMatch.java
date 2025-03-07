@@ -13,6 +13,7 @@ import java.util.Set;
 @Data
 public class UiLikedMatch {
 
+    private Long id;
     private String name;
     private Integer age;
     private String description;

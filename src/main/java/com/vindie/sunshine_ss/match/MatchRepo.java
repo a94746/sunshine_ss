@@ -24,8 +24,9 @@ public interface MatchRepo extends JpaRepository<Match, Long> {
             "LEFT JOIN FETCH m.partner.filter " +
             "LEFT JOIN FETCH m.partner.filter.relationsWithGenders " +
             "WHERE m.owner.id = :ownerId " +
+            "AND liked = FALSE " +
             "AND m.date > :date")
-    List<Match> findAllByOwnerIdAndDateAfter(Long ownerId, LocalDateTime date);
+    List<Match> findAllByOwnerIdAndDateAfterAndNotLiked(Long ownerId, LocalDateTime date);
 
     @Query("SELECT m FROM Match m " +
             "LEFT JOIN FETCH m.owner " +
