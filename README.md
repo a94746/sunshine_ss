@@ -9,11 +9,11 @@ Server-side предоставляет api для мобильного клие�
 
 
 ## Dev info:
-- Spring boot 3, java 21, auth по JWT
+- Spring boot 3, java 21, JWT, Microservices
 - [Диаграмма БД](db_diagram.pdf), [docker-compose](docker-compose.yaml)
 - Покрытие интеграционными и Unit тестами (по данным IDEA Coverage):
   - Class - 94% (110/117)
   - Method - 90% (537/594)
   - Line - 87% (1268/1446)
 - Prometheus и grafana для сбора и отображения метрик и логов
-- Lombok; Liquibase; Socketio; Spring security, MVC, mail
+- RabbitMQ; Liquibase; Socketio; Spring security; Lombok; Eureka; Feign Client
