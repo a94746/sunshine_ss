@@ -75,7 +75,7 @@ public class MatchService {
     }
 
     public List<Match> getActualMatches(User user) {
-        return matchRepo.findAllByOwnerIdAndDateAfterAndNotLiked(user.getId(), LocalDateTime.now().minus(properties.ttl.actualMatchesTTL));
+        return matchRepo.findAllByOwnerIdAndDateAfter(user.getId(), LocalDateTime.now().minus(properties.ttl.actualMatchesTTL));
     }
 
     public List<Match> getPair(String pairId) {
