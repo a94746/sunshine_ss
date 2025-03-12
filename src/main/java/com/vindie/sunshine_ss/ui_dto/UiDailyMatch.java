@@ -13,6 +13,7 @@ import java.util.Set;
 @Data
 public class UiDailyMatch {
 
+    private Long id;
     private String pairId;
     private String name;
     private Integer age;

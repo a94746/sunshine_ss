@@ -159,6 +159,7 @@ public class MatchService {
     private UiDailyMatch toUiDailyMatch(Match match, User user) {
         var partner = match.getPartner();
         UiDailyMatch ui = new UiDailyMatch();
+        ui.setId(match.getId());
         ui.setPairId(match.getPairId());
         ui.setName(partner.getName());
         ui.setAge(Period.between(partner.getBday(), LocalDate.now()).getYears());
